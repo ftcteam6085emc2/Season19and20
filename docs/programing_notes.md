@@ -1,6 +1,7 @@
 # Introduction
 
-As a starting reference I have been reading ["2017-2018 FIRST ® Tech Challenge Android Studio Programming Training Manual"](https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/android-studio-tutorial.pdf)
+As a starting reference I have been reading [FTC SDK Wiki](https://github.com/ftctechnh/ftc_app/wiki).
+This is an older reference ["2017-2018 FIRST ® Tech Challenge Android Studio Programming Training Manual"](https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/android-studio-tutorial.pdf)
 
 It is a little dated but it seems to be working.
 
