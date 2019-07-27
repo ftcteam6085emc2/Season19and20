@@ -10,7 +10,7 @@ It is a little dated but it seems to be working.
 SDK = Software Developer's Kit and includes the starting point of any FTC Robot.  The [FTC SDK is on GitHub](https://github.com/FIRST-Tech-Challenge/SkyStone)
 this link is different than in the reference below but the same steps apply.  
 
-## Ubuntu 
+### Ubuntu 
 
 BEFORE installing the SDK you must accept
 the Android liscnese by running this command
