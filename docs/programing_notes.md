@@ -8,12 +8,18 @@ It is a little dated but it seems to be working.
 ## FTC SDK
 
 SDK = Software Developer's Kit and includes the starting point of any FTC Robot.  The [FTC SDK is on GitHub](https://github.com/FIRST-Tech-Challenge/SkyStone)
-this link is different than in the reference below but the same steps apply.  BEFORE installing the SDK you must accept
+this link is different than in the reference below but the same steps apply.  
+
+## Ubuntu 
+
+BEFORE installing the SDK you must accept
 the Android liscnese by running this command
 
 ```bash
  yes | sudo ~/Android/Sdk/tools/bin/sdkmanager --licenses
 ```
+
+### Windows
 
 There is an issue when opening the SDK when Android Studio is trying to sync where it will say something along the lines of you not
 accepting the license and that you are missing a few files or something. There should be a link under the error notification, clicking
