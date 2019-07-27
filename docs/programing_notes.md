@@ -14,6 +14,11 @@ the Android liscnese by running this command
 ```bash
  yes | sudo ~/Android/Sdk/tools/bin/sdkmanager --licenses
 ```
+
+There is an issue when opening the SDK when Android Studio is trying to sync where it will say something along the lines of you not
+accepting the license and that you are missing a few files or something. There should be a link under the error notification, clicking
+this will open up a window where you can accept the license and download whatever is missing.
+
 ## Sample code
 
 The FTC SDK includes lots of samples that you can build upon.
