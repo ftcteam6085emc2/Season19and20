@@ -23,7 +23,7 @@ accepting the license and that you are missing a few files or something. There s
 this will open up a window where you can accept the license and download whatever is missing.
 
 
-![Android Studio After Import](00_AS_After_Import.png "Android Studio After Import")
+![Android Studio After Import](docs/00_AS_After_Import.PNG "Android Studio After Import")
 
 ## Sample code
 
