@@ -1,6 +1,6 @@
 # Introduction
 
-As a starting reference I have been reading [FTC SDK Wiki](https://github.com/ftctechnh/ftc_app/wiki).
+As a starting reference I have been reading [FTC SDK Wiki](https://github.com/FIRST-Tech-Challenge/SkyStone/wiki).
 
 ## FTC SDK
 
