@@ -1,0 +1,10 @@
+This is for the Vuforia programs on Android Studio. They will not work without the key.
+
+Vuforia license keys are always 380 characters long, and look as if they contain mostly
+random data. The liscense key is below and also availible on Vuforia's website. The
+login credentials should be the same as the google account login.
+Copy and paste it in to your code on the next line, between the double quotes.
+
+private static final String VUFORIA_KEY = "Insert Key here";
+
+Vuforia Key: ASxYq8z/////AAAAGfKVNNE3jU+gvP8mNaYt5P10PoBkHejK3PS1xher3fPIXyBxpFvFC/HLUBT/nThQuxl0zY6zI7EtPsk/CVOqgKa5YlyulrjYVZ/P8T/dhPyFyqml9UEBixPKcgNPSeu8xd2q1oUMvxYm33tuX/flCOtgWO2tLjgpTlMK7BM0hn2hNK8BgylLqSchG7aIdsr909swav2LqY1ZAa4qml4LoQwSkvQ1SzSSC7egkEkmWK4+U/lDnD4Wly++WqvKpP5fUWF69bW5c4/wCyww99UBlUISrMBuR8hoRZnckvqYopzE3m4oU8m2DLFjEODGxf13bfYQ0VHSvVseqLsjUkWJHp8NW7Vb79sUdb4kNqXYS7HO
