@@ -1,5 +1,5 @@
 1. Click "Program and Manage" in the FTC robot controller on phone to pull up the name of the wifi and its password.
-2. Connect to the wifi
+2. Connect to the wifi on the laptop
 3. Open "Terminal" on Android Studio
 4. Connect Phone to USB and allow all popups on phone
 5. Change directory to "C:/users/team/6085/AppData/Local/Android/Sdk/Platform-tools>"
