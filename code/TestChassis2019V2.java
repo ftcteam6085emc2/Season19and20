@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.Season19and20;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Season18and19.HWMapTest;
+import org.firstinspires.ftc.teamcode.HWMapTest;
 
 @TeleOp(name="TestChassis2019V2", group="Test")
 public class TestChassis2019V2 extends OpMode {
@@ -25,7 +25,7 @@ public class TestChassis2019V2 extends OpMode {
         //robot.RearRight.setTargetPosition(32);
         //robot.FrontLeft.setTargetPosition(32);
         //robot.RearLeft.setTargetPosition(32);
-        servoTest.setPosition(0);
+        //servoTest.setPosition(0);
 
         robot.init(hardwareMap);
         // Send telemetry message to signify robot waiting;
@@ -42,6 +42,7 @@ public class TestChassis2019V2 extends OpMode {
         DcMotor hexMotor = hardwareMap.get(DcMotor.class, "hexMotor");
         servoTest = hardwareMap.get(Servo.class, "servoTest");
 
+        servoTest.setPosition(0);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -72,8 +73,7 @@ public class TestChassis2019V2 extends OpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
 
-
-            // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
+        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         left = -gamepad1.left_stick_y;
         right = -gamepad1.right_stick_y;
 

@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.Season19and20;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Season18and19.HWMapTest;
+import org.firstinspires.ftc.teamcode.HWMapTest;
 
 @TeleOp(name="TestChassis2019", group="Test")
 public class TestChassis2019 extends OpMode {
@@ -24,7 +24,7 @@ public class TestChassis2019 extends OpMode {
 
         robot.init(hardwareMap);
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Waiting");    //
+       // telemetry.addData("Waiting");    //
     }
 
     @Override

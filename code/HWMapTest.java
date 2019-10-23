@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Season18and19;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
