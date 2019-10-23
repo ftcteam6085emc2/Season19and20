@@ -19,7 +19,7 @@ public class MotorTestV2 extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        servoTest.setPosition(0);
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -33,16 +33,10 @@ public class MotorTestV2 extends LinearOpMode {
                 hexMotor.setPower(0);
             }
             if(gamepad1.left_bumper){
-                servoTest.setPosition(0);
+                servoTest.setPosition(0.1);
             }
             if(gamepad1.right_bumper){
                 servoTest.setPosition(0.3);
-            }
-            if(gamepad1.dpad_right){
-                servoTest.setPosition(-0.25);
-            }
-            if(gamepad1.dpad_left){
-                servoTest.setPosition(0.1);
             }
             telemetry.addData("Motor Power", hexMotor.getPower());
             telemetry.addData("Servo Position", servoTest.getPosition());
