@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //This is NOT an OpMode
@@ -13,6 +14,8 @@ public class HWMapTest
     public DcMotor  FrontRight  = null;
     public DcMotor  RearLeft  = null;
     public DcMotor  RearRight  = null;
+    public DcMotor hexMotor = null;
+    public Servo servoTest = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -35,6 +38,8 @@ public class HWMapTest
         RearLeft = hwMap.dcMotor.get("RearLeft");
         RearRight = hwMap.dcMotor.get("RearRight");
         //RearRight.setDirection(DcMotor.Direction.FORWARD);
+        hexMotor = hwMap.get(DcMotor.class, "hexMotor");
+        servoTest = hwMap.get(Servo.class, "servoTest");
 
         FrontLeft.setPower(0);
         FrontRight.setPower(0);

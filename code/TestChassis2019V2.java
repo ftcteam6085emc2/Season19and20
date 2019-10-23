@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="TestChassis2019V2", group="Test")
 public class TestChassis2019V2 extends OpMode {
@@ -11,21 +9,19 @@ public class TestChassis2019V2 extends OpMode {
 
     private static final double STRAFE_POWER = 0.7;
     HWMapTest robot = new HWMapTest();
-    private DcMotor hexMotor;
-    private Servo servoTest;
+
 
     @Override
     public void init() {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
+        robot.init(hardwareMap);
         //robot.FrontRight.setTargetPosition(32);
         //robot.RearRight.setTargetPosition(32);
         //robot.FrontLeft.setTargetPosition(32);
         //robot.RearLeft.setTargetPosition(32);
-        //servoTest.setPosition(0);
-
-        robot.init(hardwareMap);
+        robot.servoTest.setPosition(0);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Oh no! Gibby didn't like that. You better delete your post or Gibby will delete your kneecaps!");    //
     }
@@ -37,37 +33,34 @@ public class TestChassis2019V2 extends OpMode {
         double right;
         double Forward;
         double Backward;
-        DcMotor hexMotor = hardwareMap.get(DcMotor.class, "hexMotor");
-        servoTest = hardwareMap.get(Servo.class, "servoTest");
 
-        servoTest.setPosition(0);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
 
             if(gamepad1.y) {
-                hexMotor.setPower(-0.25);
+                robot.hexMotor.setPower(-0.25);
             }
             else if (gamepad1.a) {
-                hexMotor.setPower(0.25);
+                robot.hexMotor.setPower(0.25);
             }
             else {
-                hexMotor.setPower(0);
+                robot.hexMotor.setPower(0);
             }
             if(gamepad1.left_bumper){
-                servoTest.setPosition(0);
+                robot.servoTest.setPosition(0);
             }
             if(gamepad1.right_bumper){
-                servoTest.setPosition(0.3);
+                robot.servoTest.setPosition(0.3);
             }
             if(gamepad1.dpad_right){
-                servoTest.setPosition(-0.25);
+                robot.servoTest.setPosition(-0.25);
             }
             if(gamepad1.dpad_left){
-                servoTest.setPosition(0.1);
+                robot.servoTest.setPosition(0.1);
             }
-            telemetry.addData("Motor Power", hexMotor.getPower());
-            telemetry.addData("Servo Position", servoTest.getPosition());
+            telemetry.addData("Motor Power", robot.hexMotor.getPower());
+            telemetry.addData("Servo Position", robot.servoTest.getPosition());
             telemetry.addData("Status", "Running");
             telemetry.update();
 
