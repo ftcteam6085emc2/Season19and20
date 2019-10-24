@@ -23,7 +23,6 @@ public class TestChassis2019V2 extends OpMode {
         //robot.RearLeft.setTargetPosition(32);
         robot.servoTest.setPosition(0);
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Oh no! Gibby didn't like that. You better delete your post or Gibby will delete your kneecaps!");    //
     }
 
     @Override
@@ -48,16 +47,10 @@ public class TestChassis2019V2 extends OpMode {
                 robot.hexMotor.setPower(0);
             }
             if(gamepad1.left_bumper){
-                robot.servoTest.setPosition(0);
+                robot.servoTest.setPosition(-0.3);
             }
             if(gamepad1.right_bumper){
-                robot.servoTest.setPosition(0.3);
-            }
-            if(gamepad1.dpad_right){
-                robot.servoTest.setPosition(-0.25);
-            }
-            if(gamepad1.dpad_left){
-                robot.servoTest.setPosition(0.1);
+                robot.servoTest.setPosition(0.5);
             }
             telemetry.addData("Motor Power", robot.hexMotor.getPower());
             telemetry.addData("Servo Position", robot.servoTest.getPosition());
