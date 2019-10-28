@@ -61,6 +61,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *
  * From the Audience perspective, the Red Alliance station is on the right and the
  * Blue Alliance Station is on the left.
+
  * Eight perimeter targets are distributed evenly around the four perimeter walls
  * Four Bridge targets are located on the bridge uprights.
  * Refer to the Field Setup manual for more specific location details
@@ -81,7 +82,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 
 @TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
-public class VuMarkIdentification extends LinearOpMode {
+public class VuMarkIdentificationV2 extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
     // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
@@ -91,6 +92,9 @@ public class VuMarkIdentification extends LinearOpMode {
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private int targetNum = 99;
+    public int targetType = 0;
+    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -145,7 +149,7 @@ public class VuMarkIdentification extends LinearOpMode {
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
+        parameters.cameraDirection = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -182,7 +186,7 @@ public class VuMarkIdentification extends LinearOpMode {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        //List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();  -moved to class for public access
         allTrackables.addAll(targetsSkyStone);
 
         /**
@@ -238,7 +242,7 @@ public class VuMarkIdentification extends LinearOpMode {
 
         front1.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
         front2.setLocation(OpenGLMatrix
                 .translation(-halfField, quadField, mmTargetHeight)
@@ -254,7 +258,7 @@ public class VuMarkIdentification extends LinearOpMode {
 
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
         rear2.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
@@ -283,14 +287,14 @@ public class VuMarkIdentification extends LinearOpMode {
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+            phoneXRotate = 90;
         }
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -314,43 +318,52 @@ public class VuMarkIdentification extends LinearOpMode {
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
-        while (!isStopRequested()) {
+        // Disable Tracking when we are done;
+        if (isStopRequested()) {
+            targetsSkyStone.deactivate();
+        }
+    }
+        public void VuforiaCheck(ArrayList<VuforiaTrackable> allTrackables2) {
+            while (targetVisible = false) {
 
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
+                // check all the trackable targets to see which one (if any) is visible.
+                targetVisible = false;
+                for (VuforiaTrackable trackable : allTrackables2) {
+                    if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                        telemetry.addData("Visible Target", trackable.getName());
+                        targetVisible = true;
+                        targetNum = allTrackables2.indexOf(trackable);
+                        // getUpdatedRobotLocation() will return null if no new information is available since
+                        // the last time that call was made, or if the trackable is not currently visible.
+                        OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                        if (robotLocationTransform != null) {
+                            lastLocation = robotLocationTransform;
+                        }
+                        break;
                     }
-                    break;
+                }
+
+                // Provide feedback as to where the robot is located (if we know).
+                if (targetVisible) {
+                    // express position (translation) of robot in inches.
+                    VectorF translation = lastLocation.getTranslation();
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+
+                    // express the rotation of the robot in degrees.
+                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                } else {
+                    telemetry.addData("Visible Target", "none");
+                }
+                telemetry.update();
+                if (targetNum == 0) {
+                    targetType = 1;
+                } else if (targetNum > 4) {
+                    targetType = 2;
+                } else {
+                    targetType = targetNum + 2;
                 }
             }
-
-            // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
-                // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-            }
-            else {
-                telemetry.addData("Visible Target", "none");
-            }
-            telemetry.update();
         }
-
-        // Disable Tracking when we are done;
-        targetsSkyStone.deactivate();
     }
-}
