@@ -93,7 +93,7 @@ public class VuMarkIdentificationV2 extends LinearOpMode {
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
     private int targetNum = 99;
-    public int targetType = 0;
+    public int targetType = 0; //1 is Skystone, 2 is a side picture, and 3-6 are the bridge pictures
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
     /*
@@ -323,16 +323,16 @@ public class VuMarkIdentificationV2 extends LinearOpMode {
             targetsSkyStone.deactivate();
         }
     }
-        public void VuforiaCheck(ArrayList<VuforiaTrackable> allTrackables2) {
+        public void VuforiaCheck() {
             while (targetVisible = false) {
 
                 // check all the trackable targets to see which one (if any) is visible.
                 targetVisible = false;
-                for (VuforiaTrackable trackable : allTrackables2) {
+                for (VuforiaTrackable trackable : allTrackables) {
                     if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                         telemetry.addData("Visible Target", trackable.getName());
                         targetVisible = true;
-                        targetNum = allTrackables2.indexOf(trackable);
+                        targetNum = allTrackables.indexOf(trackable);
                         // getUpdatedRobotLocation() will return null if no new information is available since
                         // the last time that call was made, or if the trackable is not currently visible.
                         OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();

@@ -51,6 +51,9 @@ public class Auto2019Attempt1 extends LinearOpMode {
 
         //Begin Program
         //code here
+        DriveStraight(0.5);
+        vuf.VuforiaCheck();
+        StopDriving();
     }
 
     void ColorSense() {
