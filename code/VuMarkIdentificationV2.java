@@ -49,6 +49,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
 
 /**
  * This 2019-2020 OpMode illustrates the basics of using the Vuforia localizer to determine
@@ -81,7 +82,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 
-@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+@TeleOp(name="VuMarkIdentificationV2", group ="Concept")
 public class VuMarkIdentificationV2 extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -90,8 +91,8 @@ public class VuMarkIdentificationV2 extends LinearOpMode {
     //
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = FRONT;
+    private static final boolean PHONE_IS_PORTRAIT = false;
     private int targetNum = 99;
     public int targetType = 0; //1 is Skystone, 2 is a side picture, and 3-6 are the bridge pictures
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -355,6 +356,7 @@ public class VuMarkIdentificationV2 extends LinearOpMode {
                     telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 } else {
                     telemetry.addData("Visible Target", "none");
+
                 }
                 telemetry.update();
                 if (targetNum == 0) {

@@ -42,17 +42,17 @@ public class Auto2019Attempt1 extends LinearOpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
         timer.reset();
         waitForStart();
 
         //Begin Program
         //code here
         DriveStraight(0.5);
-        vuf.VuforiaCheck();
+        sleep(2000);
         StopDriving();
     }
 
