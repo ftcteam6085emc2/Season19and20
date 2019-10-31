@@ -34,12 +34,13 @@ public class Auto2019Attempt1 extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
+        vuf.runOpMode();
         int cameraMonitorViewId =  hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         parameters.vuforiaLicenseKey = "ASxYq8z/////AAAAGfKVNNE3jU+gvP8mNaYt5P10PoBkHejK3PS1xher3fPIXyBxpFvFC/HLUBT/nThQuxl0zY6zI7EtPsk/CVOqgKa5YlyulrjYVZ/P8T/dhPyFyqml9UEBixPKcgNPSeu8xd2q1oUMvxYm33tuX/flCOtgWO2tLjgpTlMK7BM0hn2hNK8BgylLqSchG7aIdsr909swav2LqY1ZAa4qml4LoQwSkvQ1SzSSC7egkEkmWK4+U/lDnD4Wly++WqvKpP5fUWF69bW5c4/wCyww99UBlUISrMBuR8hoRZnckvqYopzE3m4oU8m2DLFjEODGxf13bfYQ0VHSvVseqLsjUkWJHp8NW7Vb79sUdb4kNqXYS7HO";
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         /*robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -52,7 +53,7 @@ public class Auto2019Attempt1 extends LinearOpMode {
         //Begin Program
         //code here
         DriveStraight(0.5);
-        sleep(2000);
+        vuf.VuforiaCheck();
         StopDriving();
     }
 
@@ -99,9 +100,9 @@ public class Auto2019Attempt1 extends LinearOpMode {
 
 
     void DriveStraight(double power){
-        robot.FrontRight.setPower(power);
+        robot.FrontRight.setPower(-power);
         robot.FrontLeft.setPower(power);
-        robot.RearRight.setPower(power);
+        robot.RearRight.setPower(-power);
         robot.RearLeft.setPower(power);
     }
 
