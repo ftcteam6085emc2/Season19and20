@@ -52,11 +52,11 @@ corresponding Alliance Robot will earn ten (10) points for their Alliance.
 their Quarry under their Alliance’s Skybridge per the following criteria.
 Points are awarded based on the order the Stones are Delivered independently
 by each Alliance.
-* a) Initial two Stones Delivered - If these are Skystones, the Alliance will
+1. Initial two Stones Delivered - If these are Skystones, the Alliance will
 earn ten (10) points each.
 If these are Stones, the Alliance will earn two (2) points each.
-* b) Remaining Stones Delivered: Both Stones and Skystones earn two (2) points each.
-* c) Each Stone Returned during the Autonomous Period deducts two (2) points, except if the first
+1. Remaining Stones Delivered: Both Stones and Skystones earn two (2) points each.
+1. Each Stone Returned during the Autonomous Period deducts two (2) points, except if the first
 Stone Returned is a Skystone, which deducts ten (10) points.
 
 
