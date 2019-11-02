@@ -52,14 +52,11 @@ corresponding Alliance Robot will earn ten (10) points for their Alliance.
 their Quarry under their Alliance’s Skybridge per the following criteria.
 Points are awarded based on the order the Stones are Delivered independently
 by each Alliance.
-1. Initial two Stones Delivered - If these are Skystones, the Alliance will
-earn ten (10) points each.
-If these are Stones, the Alliance will earn two (2) points each.
-1. Remaining Stones Delivered: Both Stones and Skystones earn two (2) points each.
-1. Each Stone Returned during the Autonomous Period deducts two (2) points, except if the first
-Stone Returned is a Skystone, which deducts ten (10) points.
-
-
+    1. Initial two Stones Delivered - If these are Skystones, the Alliance will
+       earn ten (10) points each.  If these are Stones, the Alliance will earn two (2) points each.
+    1. Remaining Stones Delivered: Both Stones and Skystones earn two (2) points each.
+    1. Each stone returned during the Autonomous Period deducts two (2) points, except if the 
+       first stone returned is a Skystone, which deducts ten (10) points.
 3) Navigating – Each Robot that is Parked over the tape separating the
 Loading Zone from the Building Zone and under their Alliance’s Skybridge at
 the end of the Autonomous Period will earn five (5) points for their Alliance.
