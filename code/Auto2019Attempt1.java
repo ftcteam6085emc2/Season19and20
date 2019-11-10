@@ -1,19 +1,21 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
+@Disabled
 @Autonomous(name="Auto2019Attempt1", group="Autonomous")
 
 public class Auto2019Attempt1 extends LinearOpMode {
@@ -22,7 +24,7 @@ public class Auto2019Attempt1 extends LinearOpMode {
     double a = 0;
     private static final double servoPos1 = 0.3;
     HWMapTest robot = new HWMapTest();
-    VuMarkIdentificationV2 vuf = new VuMarkIdentificationV2();
+    VuMarkIdentificationV3 vuf = new VuMarkIdentificationV3();
     ColorSensor colorSensor;
     ElapsedTime timer = new ElapsedTime();
 
@@ -31,11 +33,11 @@ public class Auto2019Attempt1 extends LinearOpMode {
     OpenGLMatrix lastLocation = null;
 
     VuforiaLocalizer vuforia;
+    public int cameraMonitorViewId =  hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-        vuf.runOpMode();
-        int cameraMonitorViewId =  hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         parameters.vuforiaLicenseKey = "ASxYq8z/////AAAAGfKVNNE3jU+gvP8mNaYt5P10PoBkHejK3PS1xher3fPIXyBxpFvFC/HLUBT/nThQuxl0zY6zI7EtPsk/CVOqgKa5YlyulrjYVZ/P8T/dhPyFyqml9UEBixPKcgNPSeu8xd2q1oUMvxYm33tuX/flCOtgWO2tLjgpTlMK7BM0hn2hNK8BgylLqSchG7aIdsr909swav2LqY1ZAa4qml4LoQwSkvQ1SzSSC7egkEkmWK4+U/lDnD4Wly++WqvKpP5fUWF69bW5c4/wCyww99UBlUISrMBuR8hoRZnckvqYopzE3m4oU8m2DLFjEODGxf13bfYQ0VHSvVseqLsjUkWJHp8NW7Vb79sUdb4kNqXYS7HO";
@@ -47,7 +49,7 @@ public class Auto2019Attempt1 extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
-        timer.reset();
+        //timer.reset();
         waitForStart();
 
         //Begin Program
@@ -57,7 +59,7 @@ public class Auto2019Attempt1 extends LinearOpMode {
         StopDriving();
     }
 
-    void ColorSense() {
+    /*void ColorSense() {
         Telemetry();
         float hsvValues[] = {0F, 0F, 0F};
 
@@ -96,7 +98,7 @@ public class Auto2019Attempt1 extends LinearOpMode {
             //do whatever
         }
 
-    }
+    }*/
 
 
     void DriveStraight(double power){

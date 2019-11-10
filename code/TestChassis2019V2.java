@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name="TestChassis2019V2", group="Test")
 public class TestChassis2019V2 extends OpMode {
@@ -22,6 +23,9 @@ public class TestChassis2019V2 extends OpMode {
         //robot.FrontLeft.setTargetPosition(32);
         //robot.RearLeft.setTargetPosition(32);
         robot.servoTest.setPosition(0);
+        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexMotor.setTargetPosition(0);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // Send telemetry message to signify robot waiting;
     }
 
@@ -90,6 +94,17 @@ public class TestChassis2019V2 extends OpMode {
             //Right Side
             robot.FrontRight.setPower(-right);
             robot.RearRight.setPower(-right);
+        }
+    }
+    public void Movent(){
+        int pos = robot.hexMotor.getCurrentPosition();
+        robot.hexMotor.setTargetPosition(pos);
+        if (robot.hexMotor.getCurrentPosition() > pos) {
+            robot.hexMotor.setPower(-0.75);
+        } else if (robot.hexMotor.getCurrentPosition() < pos) {
+            robot.hexMotor.setPower(0.75);
+        } else if (robot.hexMotor.getCurrentPosition() > pos - 50 || robot.hexMotor.getCurrentPosition() < pos + 50) {
+            robot.hexMotor.setPower(0);
         }
     }
     public void Telemetry () {
