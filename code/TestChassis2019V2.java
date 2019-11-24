@@ -23,9 +23,6 @@ public class TestChassis2019V2 extends OpMode {
         //robot.FrontLeft.setTargetPosition(32);
         //robot.RearLeft.setTargetPosition(32);
         robot.servoTest.setPosition(0);
-        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexMotor.setTargetPosition(0);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // Send telemetry message to signify robot waiting;
     }
 
@@ -97,6 +94,9 @@ public class TestChassis2019V2 extends OpMode {
         }
     }
     public void Movent(){
+        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexMotor.setTargetPosition(0);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         int pos = robot.hexMotor.getCurrentPosition();
         robot.hexMotor.setTargetPosition(pos);
         if (robot.hexMotor.getCurrentPosition() > pos) {
