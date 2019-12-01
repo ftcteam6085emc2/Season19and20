@@ -15,17 +15,17 @@ public class AutoFoundation extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
+        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
-
-        InchUp();
-        telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
-        telemetry.update();
-        //DriveStraightDistance(2500, 0.6);
-        /*sleep(3000);
-        Turn(2100, 0.6);
+        Inch(true);
         sleep(3000);
-        Strafe(500, 0.6);*/
+        DriveStraightDistance(2500, 0.6);
+        sleep(3000);
+        Inch(false);
+        sleep(3000);
+        DriveStraightDistance(-2500, -0.6);
     }
 
     void DriveStraight(double power){
@@ -135,33 +135,33 @@ public class AutoFoundation extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    void InchUp(){
-        //boolean check = false;
-        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.hexMotor.setTargetPosition(firstUp);
 
-        robot.hexMotor.setPower(0.1);
-        while(robot.hexMotor.isBusy()){
-            telemetry.addData("isBusy", robot.hexMotor.getCurrentPosition());
+    void Inch(boolean positive){
+        boolean check = false;
+        if(positive == true) {
+            while (check == false && !isStopRequested()) {
+                if (robot.hexMotor.getCurrentPosition() < firstUp) {
+                    robot.hexMotor.setPower(0.3);
+                } else {
+                    robot.hexMotor.setPower(0);
+                    check = true;
+                }
+            }
+            telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
             telemetry.update();
         }
-        /*int i = 0;
-        while(i < 6) {
-            telemetry.addData("empty", robot.hexMotor.getCurrentPosition());
-            telemetry.update();
-            sleep(500);
-            i++;
-        }*/
-        robot.hexMotor.setPower(0);
-        /*while (check == false) {
-            if (robot.hexMotor.getCurrentPosition() < firstUp){
-                robot.hexMotor.setPower(0.1);
+
+        else if(positive == false && !isStopRequested()){
+            while (check == false) {
+                if (robot.hexMotor.getCurrentPosition() > 0) {
+                    robot.hexMotor.setPower(-0.3);
+                } else {
+                    robot.hexMotor.setPower(0);
+                    check = true;
+                }
+                telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
+                telemetry.update();
             }
-            else{
-                robot.hexMotor.setPower(0);
-                check = true;
-            }
-        }*/
+        }
     }
 }
