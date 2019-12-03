@@ -15,7 +15,14 @@ public class HWMapTest
     public DcMotor  RearLeft  = null;
     public DcMotor  RearRight  = null;
     public DcMotor hexMotor = null;
+    public DcMotor SpinLeft = null;
+    public DcMotor SpinRight = null;
+    public DcMotor ArmLeft = null;
+    public DcMotor ArmRight = null;
+
     public Servo servoTest = null;
+    public Servo GrabLeft = null;
+    public Servo GrabRight = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -38,8 +45,15 @@ public class HWMapTest
         RearLeft = hwMap.dcMotor.get("RearLeft");
         RearRight = hwMap.dcMotor.get("RearRight");
         //RearRight.setDirection(DcMotor.Direction.FORWARD);
+        //SpinLeft = hwMap.get(DcMotor.class, "SpinLeft");
+        //SpinRight = hwMap.get(DcMotor.class, "SpinRight");
+        //ArmLeft = hwMap.get(DcMotor.class, "ArmLeft");
+        //ArmRight = hwMap.get(DcMotor.class, "ArmRight");
         hexMotor = hwMap.get(DcMotor.class, "hexMotor");
+
         servoTest = hwMap.get(Servo.class, "servoTest");
+        //GrabLeft = hwMap.get(Servo.class, "GrabLeft");
+        //GrabRight = hwMap.get(Servo.class, "GrabRight");
 
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
