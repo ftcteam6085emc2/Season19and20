@@ -9,13 +9,13 @@ public class TouchdownJesusV1 extends OpMode {
 
 
     private static final double STRAFE_POWER = 0.7;
-    HWMapTest robot = new HWMapTest();
+    private double ArmPower = 0.5;
+    HWMapTouchdown robot = new HWMapTouchdown();
 
 
     @Override
     public void init() {
         robot.init(hardwareMap);
-        robot.servoTest.setPosition(0);
     }
 
     @Override
@@ -28,37 +28,46 @@ public class TouchdownJesusV1 extends OpMode {
         telemetry.update();
 
         if(gamepad1.x) {
-            robot.SpinRight.setPower(-0.5);
-            robot.SpinLeft.setPower(0.5);
+            robot.SpinRight.setPower(-ArmPower);
+            robot.SpinLeft.setPower(ArmPower);
         }
         else if(gamepad1.b) {
-            robot.SpinRight.setPower(0.5);
-            robot.SpinLeft.setPower(-0.5);
+            robot.SpinRight.setPower(ArmPower);
+            robot.SpinLeft.setPower(-ArmPower);
+        }
+        else {
+            robot.SpinLeft.setPower(0);
+            robot.SpinRight.setPower(0);
         }
 
         if(gamepad1.left_bumper){
-            robot.GrabRight.setPosition(0.5);
-            robot.GrabLeft.setPosition(-0.3);
+            robot.GrabRight.setPosition(0.7);
+            robot.GrabLeft.setPosition(0.7);
         }
         if(gamepad1.right_bumper){
-            robot.GrabRight.setPosition(-0.3);
-            robot.GrabLeft.setPosition(0.5);
+            robot.GrabRight.setPosition(0.2);
+            robot.GrabLeft.setPosition(0.2);
         }
 
         if(gamepad1.y){
-            robot.ArmRight.setPower(-0.2);
-            robot.ArmLeft.setPower(0.2);
+            robot.ArmRight.setPower(ArmPower);
+            robot.ArmLeft.setPower(-ArmPower);
         }
         else if(gamepad1.a){
-            robot.ArmRight.setPower(0.2);
-            robot.ArmLeft.setPower(-0.2);
+            robot.ArmRight.setPower(-ArmPower);
+            robot.ArmLeft.setPower(ArmPower);
+        }
+        else {
+            robot.ArmRight.setPower(0);
+            robot.ArmLeft.setPower(0);
         }
 
-        telemetry.addData("Motor Power", robot.hexMotor.getPower());
-        telemetry.addData("Servo Position", robot.servoTest.getPosition());
-        telemetry.addData("Status", "Running");
-        telemetry.update();
-
+        if (gamepad1.dpad_up) {
+            ArmPower += 0.1;
+        }
+        if (gamepad1.dpad_down) {
+            ArmPower -= 0.1;
+        }
         left = -gamepad1.left_stick_y;
         right = -gamepad1.right_stick_y;
 
@@ -84,7 +93,7 @@ public class TouchdownJesusV1 extends OpMode {
             robot.RearRight.setPower(-right);
         }
     }
-    public void Movent(){
+    /*public void Movent(){
         robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexMotor.setTargetPosition(0);
         robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -97,7 +106,7 @@ public class TouchdownJesusV1 extends OpMode {
         } else if (robot.hexMotor.getCurrentPosition() > pos - 50 || robot.hexMotor.getCurrentPosition() < pos + 50) {
             robot.hexMotor.setPower(0);
         }
-    }
+    }*/
     public void Telemetry () {
         telemetry.addData("FR_Power", "%.2f", robot.FrontRight.getPower());
         telemetry.addData("RR_Power", "%.2f", robot.RearRight.getPower());

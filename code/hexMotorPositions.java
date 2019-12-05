@@ -9,35 +9,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class hexMotorPositions extends LinearOpMode {
 
     private double a = 0;
-    private static int firstUp = 10;
+    private static int firstUp = 5;
     HWMapTest robot = new HWMapTest();
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexMotor.setTargetPosition(4);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         waitForStart();
-        robot.hexMotor.setPower(0.1);
 
         telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
         telemetry.update();
-        //InchUp();
+        InchUp();
         sleep(1000);
     }
 
     void InchUp(){
-        boolean check = false;
-        while (check == false) {
-            if (robot.hexMotor.getCurrentPosition() < firstUp){
-                robot.hexMotor.setPower(0.3);
-            }
-            else{
-                robot.hexMotor.setPower(0);
-                check = true;
-            }
-            telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
-            telemetry.update();
-        }
+        robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexMotor.setTargetPosition(5);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.hexMotor.setPower(0.1);
     }
 }
