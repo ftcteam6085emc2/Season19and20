@@ -5,34 +5,38 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "AutoFoundation", group = "Autonomous")
+@Autonomous(name = "AutoTouchdownJesus", group = "Autonomous")
 
-public class AutoFoundation extends LinearOpMode {
+public class AutoTouchdownJesus extends LinearOpMode {
 
-    private double a = 0;
     private static int firstUp = 10;
-    HWMapTest robot = new HWMapTest();
+    private boolean strafeCancel = false;
+    HWMapTouchdown robot = new HWMapTouchdown();
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.ArmLeft.setTargetPosition(0);
+        robot.ArmRight.setTargetPosition(0);
 
         waitForStart();
-        Inch(true);
+        Strafe(2614, 0.8);
         sleep(3000);
-        DriveStraightDistance(2500, 0.6);
-        sleep(3000);
-        Inch(false);
-        sleep(3000);
-        DriveStraightDistance(-2500, -0.6);
+        //Flip();
     }
 
     void DriveStraight(double power){
-        robot.FrontRight.setPower(-power);
-        robot.FrontLeft.setPower(power);
-        robot.RearRight.setPower(-power);
-        robot.RearLeft.setPower(power);
+        if(strafeCancel == true){
+            robot.FrontRight.setPower(power - 0.2);
+            robot.FrontLeft.setPower(-power);
+            robot.RearRight.setPower(power);
+            robot.RearLeft.setPower(-power - 0.2);
+        }
+        else {
+            robot.FrontRight.setPower(power);
+            robot.FrontLeft.setPower(-power);
+            robot.RearRight.setPower(power);
+            robot.RearLeft.setPower(-power);
+        }
     }
 
     void StopDriving (){
@@ -46,10 +50,10 @@ public class AutoFoundation extends LinearOpMode {
         robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(-distance);
-        robot.RearLeft.setTargetPosition(distance);
+        robot.FrontRight.setTargetPosition(distance);
+        robot.FrontLeft.setTargetPosition(-distance);
+        robot.RearRight.setTargetPosition(distance);
+        robot.RearLeft.setTargetPosition(-distance);
 
         robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -57,11 +61,8 @@ public class AutoFoundation extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        a = 0;
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && a < 1500){
-            if(((distance + 20) > robot.FrontRight.getCurrentPosition()) && (robot.FrontRight.getCurrentPosition() > (distance - 20))){
-                a = 1500;
-            }
+        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
         }
 
         StopDriving();
@@ -89,11 +90,8 @@ public class AutoFoundation extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        a = 0;
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && a < 1500) {
-            if(((distance + 20) > robot.FrontRight.getCurrentPosition()) && (robot.FrontRight.getCurrentPosition() > (distance - 20))){
-                a = 1500;
-            }
+        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
         }
 
         StopDriving();
@@ -103,7 +101,9 @@ public class AutoFoundation extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    //left is negative, right is positive
     void Strafe (int distance, double power){
+        strafeCancel = true;
         telemetry.addData("Driving", "Yes");
         robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -121,11 +121,8 @@ public class AutoFoundation extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        a = 0;
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && a < 1500){
-            if(((distance + 20) > robot.FrontRight.getCurrentPosition()) && (robot.FrontRight.getCurrentPosition() > (distance - 20))){
-                a = 1500;
-            }
+        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
         }
 
         StopDriving();
@@ -133,35 +130,30 @@ public class AutoFoundation extends LinearOpMode {
         robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        strafeCancel = false;
     }
 
-
-    void Inch(boolean positive){
-        boolean check = false;
-        if(positive == true) {
-            while (check == false && !isStopRequested()) {
-                if (robot.hexMotor.getCurrentPosition() < firstUp) {
-                    robot.hexMotor.setPower(0.3);
-                } else {
-                    robot.hexMotor.setPower(0);
-                    check = true;
-                }
-            }
-            telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
-            telemetry.update();
-        }
-
-        else if(positive == false && !isStopRequested()){
-            while (check == false) {
-                if (robot.hexMotor.getCurrentPosition() > 0) {
-                    robot.hexMotor.setPower(-0.3);
-                } else {
-                    robot.hexMotor.setPower(0);
-                    check = true;
-                }
-                telemetry.addData("hexMotor Position", robot.hexMotor.getCurrentPosition());
+    //NeveRest 40 Gearmotor has 280 ppr (Wheels) 1120 for full rotation
+    //NeveRest 20 Gearmotor has 140 ppr (Arm) 560 for full rotation
+    void Flip (){
+        robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        for(int i = 140; i <= 560; i+=140){
+            robot.ArmLeft.setTargetPosition(i);
+            robot.ArmRight.setTargetPosition(i);
+            robot.ArmLeft.setPower(0.25);
+            robot.ArmRight.setPower(0.25);
+            while(opModeIsActive() && robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()){
+                telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
+                telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
                 telemetry.update();
+                idle();
             }
+            robot.ArmLeft.setPower(0);
+            robot.ArmRight.setPower(0);
+            sleep(1000);
         }
     }
 }
