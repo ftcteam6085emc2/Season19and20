@@ -9,13 +9,19 @@ public class TouchdownJesusV1 extends OpMode {
 
 
     private static final double STRAFE_POWER = 0.7;
-    private double ArmPower = 0.5;
+    private double ArmPower = 0.4;
+    private double SpinPower = 1.0;
+    boolean strafeCheck = false;
     HWMapTouchdown robot = new HWMapTouchdown();
 
 
     @Override
     public void init() {
         robot.init(hardwareMap);
+        robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override
@@ -28,12 +34,12 @@ public class TouchdownJesusV1 extends OpMode {
         telemetry.update();
 
         if(gamepad1.x) {
-            robot.SpinRight.setPower(-ArmPower);
-            robot.SpinLeft.setPower(ArmPower);
+            robot.SpinRight.setPower(-SpinPower);
+            robot.SpinLeft.setPower(SpinPower);
         }
         else if(gamepad1.b) {
-            robot.SpinRight.setPower(ArmPower);
-            robot.SpinLeft.setPower(-ArmPower);
+            robot.SpinRight.setPower(SpinPower);
+            robot.SpinLeft.setPower(-SpinPower);
         }
         else {
             robot.SpinLeft.setPower(0);
@@ -62,23 +68,29 @@ public class TouchdownJesusV1 extends OpMode {
             robot.ArmLeft.setPower(0);
         }
 
-        if (gamepad1.dpad_up) {
+        /*if (gamepad1.dpad_up) {
             ArmPower += 0.1;
         }
         if (gamepad1.dpad_down) {
             ArmPower -= 0.1;
-        }
+        }*/
         left = -gamepad1.left_stick_y;
         right = -gamepad1.right_stick_y;
 
-        if (gamepad1.dpad_right) {
+        if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
+            strafeCheck = true;
+        }
+        else {
+            strafeCheck = false;
+        }
+        if (strafeCheck == true && (gamepad1.dpad_right || gamepad1.left_stick_x > 0 || gamepad1.right_stick_x > 0)) {
             //Strafe Right
             robot.FrontRight.setPower(STRAFE_POWER * 1.1);
             robot.RearRight.setPower(-STRAFE_POWER);
 
             robot.FrontLeft.setPower(STRAFE_POWER);
             robot.RearLeft.setPower(-STRAFE_POWER * 1.1);
-        } else if (gamepad1.dpad_left) {
+        } else if (strafeCheck == true && (gamepad1.dpad_left || gamepad1.left_stick_x < 0 || gamepad1.right_stick_x < 0)) {
             //Strafe Left
             robot.FrontRight.setPower(-STRAFE_POWER * 1.1);
             robot.RearRight.setPower(STRAFE_POWER);
