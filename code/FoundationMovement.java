@@ -61,16 +61,16 @@ public class FoundationMovement extends LinearOpMode {
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
-        telemetry.addData("Status", "two lines of code");    //        
+        telemetry.addData("Status", "try to strafe by Sam");    //        
         telemetry.update();  
-            sleep(1000);
+        sleep(4000);
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+        robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -89,30 +89,52 @@ public class FoundationMovement extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        
-        
-
-        
+        strafeDrive(1.0, 16, 5000, "right");
+        /*
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED,  10,  10, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
         encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED,  87,  87, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
-        
+        encoderDrive(DRIVE_SPEED,  88,  88, 10.0);  // S1: Forward 88 Inches with 10 Sec timeout
                 // Lift arm up
-        robot.hexMotor.setTargetPosition(20);
-        robot.hexMotor.setPower(0.75);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.hexMotor.setPower(0)
+
+        linearSlideDrive(0.75, 15, 3000);
         
         encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED,  23,  23, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
+        encoderDrive(DRIVE_SPEED,  26.5,  26.5, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
         
+        linearSlideDrive(-1.0, -6, 3000);
+        
+        encoderDrive(DRIVE_SPEED,  -35,  -35, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
+        
+        linearSlideDrive(0.75, 6, 3000);
+        */
         
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
+    }
+
+    public void linearSlideDrive(double power,
+                             int targetPosition,
+                             int timeoutS) {
+        robot.hexMotor.setTargetPosition(targetPosition);
+        robot.hexMotor.setPower(power);
+        runtime.reset();
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive() &&
+              (runtime.seconds() < timeoutS) &&
+              (robot.hexMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("hxMotor",  "Power %7d Target: %7d", power,  targetPosition);
+                telemetry.update();
+        }        
+        // apply brake hopefully the motor will stay
+        robot.hexMotor.setPower(0.0);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sleep(250);         
     }
 
     /*
@@ -142,6 +164,86 @@ public class FoundationMovement extends LinearOpMode {
             robot.rightBack.setTargetPosition(newRightTarget);
             robot.leftBack.setTargetPosition(newLeftTarget);  
             
+            // Turn On RUN_TO_POSITION
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.leftDrive.setPower(Math.abs(speed));
+            robot.rightDrive.setPower(Math.abs(speed));
+            robot.rightBack.setPower(Math.abs(speed));
+            robot.leftBack.setPower(Math.abs(speed));
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                   (runtime.seconds() < timeoutS) &&
+                   (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                                            robot.leftDrive.getCurrentPosition(),
+                                            robot.rightDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.leftDrive.setPower(0);
+            robot.rightDrive.setPower(0);
+            robot.rightBack.setPower(0);
+            robot.leftBack.setPower(0);
+            
+            // Turn off RUN_TO_POSITION
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    /*
+     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void strafeDrive(double speed,
+                             double distance,
+                             double timeoutS,
+                             String direction) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)(distance * COUNTS_PER_INCH);
+            newRightTarget = robot.rightDrive.getCurrentPosition() + (int)(distance * COUNTS_PER_INCH);
+            newRightTarget = robot.rightBack.getCurrentPosition() + (int)(distance * COUNTS_PER_INCH);
+            newLeftTarget = robot.leftBack.getCurrentPosition() + (int)(distance * COUNTS_PER_INCH);
+
+            // Determine new target position, and pass to motor controller
+            if (direction == "right") {
+                robot.leftDrive.setTargetPosition(newLeftTarget);
+                robot.rightDrive.setTargetPosition(-newRightTarget);
+                robot.rightBack.setTargetPosition(newRightTarget);
+                robot.leftBack.setTargetPosition(-newLeftTarget);  
+                
+            } else {
+                robot.leftDrive.setTargetPosition(-newLeftTarget);
+                robot.rightDrive.setTargetPosition(newRightTarget);
+                robot.rightBack.setTargetPosition(-newRightTarget);
+                robot.leftBack.setTargetPosition(newLeftTarget);  
+            }
+
             // Turn On RUN_TO_POSITION
             robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
