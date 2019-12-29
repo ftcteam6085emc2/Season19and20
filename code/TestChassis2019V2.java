@@ -29,8 +29,11 @@ public class TestChassis2019V2 extends OpMode {
     @Override
     public void loop() {
         Telemetry();
-        double left;
-        double right;
+        double left = -gamepad1.left_stick_y;
+        double right = gamepad1.right_stick_y;
+        double leftx = -gamepad1.left_stick_x;
+        double rightx = -gamepad1.right_stick_x;
+
         double Forward;
         double Backward;
 
@@ -59,11 +62,16 @@ public class TestChassis2019V2 extends OpMode {
             telemetry.update();
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
+        //Left Side
+        robot.FrontLeft.setPower(left+leftx);
+        robot.RearLeft.setPower(left-leftx);
+
+        //Right Side
+        robot.FrontRight.setPower(right-rightx);
+        robot.RearRight.setPower(right+rightx);
 
         //Strafe Right
-        if (gamepad1.dpad_right) {
+        /*if (gamepad1.dpad_right) {
             //Right Side
             robot.FrontRight.setPower(STRAFE_POWER * 1.1);
             robot.RearRight.setPower(-STRAFE_POWER);
@@ -91,7 +99,7 @@ public class TestChassis2019V2 extends OpMode {
             //Right Side
             robot.FrontRight.setPower(-right);
             robot.RearRight.setPower(-right);
-        }
+        }*/
     }
     public void Movent(){
         robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

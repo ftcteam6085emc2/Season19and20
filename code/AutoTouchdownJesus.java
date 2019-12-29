@@ -18,10 +18,30 @@ public class AutoTouchdownJesus extends LinearOpMode {
         robot.ArmLeft.setTargetPosition(0);
         robot.ArmRight.setTargetPosition(0);
 
+        // 1 tile = 23.5 inches
         waitForStart();
-        Strafe(2614, 0.8);
+        robot.SpinRight.setPower(-1.0);
+        robot.SpinLeft.setPower(1.0);
+        DriveStraightDistance(4294, 0.8); //46 inches
         sleep(3000);
-        //Flip();
+        robot.GrabRight.setPosition(0.2);
+        robot.GrabLeft.setPosition(0.2);
+        DriveStraightDistance(-1120, -0.8); //12 inches
+        Turn(1120, 0.5);
+        DriveStraightDistance(-8774, -0.8); //3.5 tiles
+        Flip();
+        RevFlip();
+        DriveStraightDistance(7654, 0.8); //1 rotation less than 3.5 tiles
+        Turn(-1120, 0.5);
+        robot.SpinLeft.setPower(1.0);
+        robot.SpinRight.setPower(-1.0);
+        DriveStraightDistance(1120, 0.8); //12 inches
+        DriveStraightDistance(-1120, -0.8); //12 inches
+        Turn(1120, 0.5);
+        DriveStraightDistance(-7654, -0.8);
+        Flip();
+        RevFlip();
+        DriveStraightDistance(3290, 0.8); //1.5 tiles
     }
 
     void DriveStraight(double power){
@@ -155,5 +175,37 @@ public class AutoTouchdownJesus extends LinearOpMode {
             robot.ArmRight.setPower(0);
             sleep(1000);
         }
+        robot.GrabRight.setPosition(0.6);
+        robot.GrabLeft.setPosition(0.6);
+        robot.SpinRight.setPower(0);
+        robot.SpinLeft.setPower(0);
+    }
+
+    void RevFlip() {
+        robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        for(int i = -140; i >= -560; i-=140) {
+            robot.ArmLeft.setTargetPosition(i);
+            robot.ArmRight.setTargetPosition(i);
+            robot.ArmLeft.setPower(-0.25);
+            robot.ArmRight.setPower(-0.25);
+            while(opModeIsActive() && robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()){
+                telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
+                telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
+                telemetry.update();
+                idle();
+            }
+            robot.ArmLeft.setPower(0);
+            robot.ArmRight.setPower(0);
+            if(i == -280) {
+                robot.GrabRight.setPosition(0.2);
+                robot.GrabLeft.setPosition(0.2);
+            }
+            sleep(1000);
+        }
+        robot.GrabRight.setPosition(0.6);
+        robot.GrabLeft.setPosition(0.6);
     }
 }
