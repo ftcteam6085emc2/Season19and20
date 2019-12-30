@@ -89,26 +89,29 @@ public class FoundationMovement extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        strafeDrive(1.0, 16, 5000, "right");
-        /*
+        
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  10,  10, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
-        encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED,  88,  88, 10.0);  // S1: Forward 88 Inches with 10 Sec timeout
-                // Lift arm up
+        //encoderDrive(DRIVE_SPEED,  10,  10, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
+        //encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
+        //encoderDrive(DRIVE_SPEED,  88,  88, 10.0);  // S1: Forward 88 Inches with 10 Sec timeout
+        // Lift arm up
+        linearSlideDrive(1.0, 6, 3.0);
+        
+        //encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
+        //encoderDrive(DRIVE_SPEED,  25.5,  25.5, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
+        //robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        //robot.hexMotor.setTargetPosition(-5);
 
-        linearSlideDrive(0.75, 15, 3000);
-        
-        encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED,  26.5,  26.5, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
-        
-        linearSlideDrive(-1.0, -6, 3000);
-        
-        encoderDrive(DRIVE_SPEED,  -35,  -35, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
-        
-        linearSlideDrive(0.75, 6, 3000);
-        */
+        //robot.hexMotor.setPower(1);
+        //sleep(1000);
+        //robot.hexMotor.setPower(0);
+        sleep(4000);
+        linearSlideDrive(1.0, -7, 0.5);
+        //encoderDrive(DRIVE_SPEED,  -35,  -35, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
+        // Lift arm up
+        //linearSlideDrive(1.0, 6, 3.0);        
+        //strafeDrive(1.0, 55, 5.0, "left");
         
         sleep(1000);     // pause for servos to move
 
@@ -118,23 +121,28 @@ public class FoundationMovement extends LinearOpMode {
 
     public void linearSlideDrive(double power,
                              int targetPosition,
-                             int timeoutS) {
+                             double timeoutS) {
         robot.hexMotor.setTargetPosition(targetPosition);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.hexMotor.setPower(power);
         runtime.reset();
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        telemetry.addData("hexMotor", "In Linear Slide Function");
+        telemetry.update();
+        
         while (opModeIsActive() &&
               (runtime.seconds() < timeoutS) &&
               (robot.hexMotor.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("hxMotor",  "Power %7d Target: %7d", power,  targetPosition);
+                telemetry.addData("hexMotor",  "Power %7f Target: %7d", power,  robot.hexMotor.getCurrentPosition());
                 telemetry.update();
-        }        
+                sleep(250);
+        } 
+
         // apply brake hopefully the motor will stay
         robot.hexMotor.setPower(0.0);
         robot.hexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(250);         
+        //sleep(250);         
     }
 
     /*
