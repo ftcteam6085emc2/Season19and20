@@ -1,9 +1,16 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.R;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import java.io.IOException;
 
 @TeleOp(name="TouchdownJesusV1", group="Test")
 public class TouchdownJesusV1 extends OpMode {
@@ -19,11 +26,8 @@ public class TouchdownJesusV1 extends OpMode {
     private boolean Swap2 = false;
     private boolean FULLPOWER = false;
     private boolean halfpower = false;
-    double left1 = -gamepad1.left_stick_y;
-    double right1 = gamepad1.right_stick_y;
-    double leftx1 = -gamepad1.left_stick_x;
-    double rightx1 = -gamepad1.right_stick_x;
     HWMapTouchdown robot = new HWMapTouchdown();
+    MediaPlayer mediaPlayer = new MediaPlayer();
 
 
     @Override
@@ -33,20 +37,30 @@ public class TouchdownJesusV1 extends OpMode {
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        String url = "https://www.youtube.com/watch?v=cuOEv1jCivg"; // your URL here
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mediaPlayer.setDataSource(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void loop() {
         Telemetry();
-        left1 = -gamepad1.left_stick_y;
-        right1 = gamepad1.right_stick_y;
-        leftx1 = -gamepad1.left_stick_x;
-        rightx1 = -gamepad1.right_stick_x;
+        double left1 = -gamepad1.left_stick_y;
+        double right1 = gamepad1.right_stick_y;
+        double leftx1 = -gamepad1.left_stick_x;
+        double rightx1 = -gamepad1.right_stick_x;
         if(FULLPOWER == true){
             Multiplier = 10;
         }
         else if(halfpower == true){
             Multiplier = 0.1;
+        }
+        else{
+            Multiplier = 1;
         }
 
         if(gamepad1.dpad_down && Swap1 == false){
@@ -116,6 +130,15 @@ public class TouchdownJesusV1 extends OpMode {
             halfpower = false;
             Swap2 = false;
         }
+        if(gamepad1.left_stick_button){
+            try {
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
 
         double left2 = -gamepad2.left_stick_y;
         double right2 = gamepad2.right_stick_y;
@@ -180,42 +203,31 @@ public class TouchdownJesusV1 extends OpMode {
             halfpower = false;
             Swap2 = false;
         }
+        if(gamepad2.left_stick_button){
+            try {
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        /*if (gamepad1.dpad_up) {
-            ArmPower += 0.1;
         }
-        if (gamepad1.dpad_down) {
-            ArmPower -= 0.1;
-        }*/
 
-        /*if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
-            Swap1 = true;
+        if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
+            robot.FrontLeft.setPower(left1-leftx1);
+            robot.RearLeft.setPower(left1+leftx1);
+
+            robot.FrontRight.setPower(right1-rightx1);
+            robot.RearRight.setPower(right1+rightx1);
         }
         else {
-            Swap1 = false;
+            robot.FrontLeft.setPower(left1);
+            robot.RearLeft.setPower(left1);
+
+            robot.FrontRight.setPower(right1);
+            robot.RearRight.setPower(right1);
         }
-        if (Swap1 == true && (gamepad1.dpad_left || gamepad1.left_stick_x < 0 || gamepad1.right_stick_x < 0)) {
-            //Strafe Right
-            robot.FrontRight.setPower(STRAFE_POWER * 1.1);
-            robot.RearRight.setPower(-STRAFE_POWER);
-
-            robot.FrontLeft.setPower(STRAFE_POWER);
-            robot.RearLeft.setPower(-STRAFE_POWER * 1.1);
-        } else if (Swap1 == true && (gamepad1.dpad_right || gamepad1.left_stick_x > 0 || gamepad1.right_stick_x > 0)) {
-            //Strafe Left
-            robot.FrontRight.setPower(-STRAFE_POWER * 1.1);
-            robot.RearRight.setPower(STRAFE_POWER);
-
-            robot.FrontLeft.setPower(-STRAFE_POWER);
-            robot.RearLeft.setPower(STRAFE_POWER * 1.1);
-        } else {
-            robot.FrontLeft.setPower(left);
-            robot.RearLeft.setPower(left);
-
-            robot.FrontRight.setPower(-right);
-            robot.RearRight.setPower(-right);
-        }*/
-            if (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0) {
+            /*if (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0) {
                 robot.FrontLeft.setPower((left1 + leftx1)*Multiplier);
                 robot.RearLeft.setPower((left1 - leftx1)*Multiplier);
 
@@ -235,12 +247,12 @@ public class TouchdownJesusV1 extends OpMode {
                 robot.FrontRight.setPower((right2 - rightx2)*Multiplier);
                 robot.RearRight.setPower((right2 + rightx2)*Multiplier);
             } else {
-                robot.FrontLeft.setPower(left2);
-                robot.RearLeft.setPower(left2);
+                robot.FrontLeft.setPower(left2*Multiplier);
+                robot.RearLeft.setPower(left2*Multiplier);
 
-                robot.FrontRight.setPower(-right2);
-                robot.RearRight.setPower(-right2);
-            }
+                robot.FrontRight.setPower(-right2*Multiplier);
+                robot.RearRight.setPower(-right2*Multiplier);
+            }*/
 
     }
     /*public void Movent(){
