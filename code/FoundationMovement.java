@@ -76,7 +76,7 @@ public class FoundationMovement extends LinearOpMode {
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         
         robot.rightBack.setDirection(DcMotor.Direction.REVERSE);
         // Send telemetry message to indicate successful Encoder reset
@@ -96,7 +96,7 @@ public class FoundationMovement extends LinearOpMode {
         //encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
         //encoderDrive(DRIVE_SPEED,  88,  88, 10.0);  // S1: Forward 88 Inches with 10 Sec timeout
         // Lift arm up
-        linearSlideDrive(1.0, 6, 3.0);
+        linearSlideDrive(1.0, 6, 3.0, true);
         
         //encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
         //encoderDrive(DRIVE_SPEED,  25.5,  25.5, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
@@ -107,7 +107,7 @@ public class FoundationMovement extends LinearOpMode {
         //sleep(1000);
         //robot.hexMotor.setPower(0);
         sleep(4000);
-        linearSlideDrive(1.0, -7, 0.5);
+        linearSlideDrive(1.0, -7, 0.5, false);
         //encoderDrive(DRIVE_SPEED,  -35,  -35, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
         // Lift arm up
         //linearSlideDrive(1.0, 6, 3.0);        
@@ -121,7 +121,13 @@ public class FoundationMovement extends LinearOpMode {
 
     public void linearSlideDrive(double power,
                              int targetPosition,
-                             double timeoutS) {
+                             double timeoutS,
+                             boolean brake) {
+        if (brake == true) {
+            robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
         robot.hexMotor.setTargetPosition(targetPosition);
         robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.hexMotor.setPower(power);
@@ -141,7 +147,6 @@ public class FoundationMovement extends LinearOpMode {
 
         // apply brake hopefully the motor will stay
         robot.hexMotor.setPower(0.0);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //sleep(250);         
     }
 
