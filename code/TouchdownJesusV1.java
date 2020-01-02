@@ -4,8 +4,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.R;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,19 +13,11 @@ import java.io.IOException;
 @TeleOp(name="TouchdownJesusV1", group="Test")
 public class TouchdownJesusV1 extends OpMode {
 
-
-    private static final double STRAFE_POWER = 0.7;
-    private double ArmPower = 0.4;
-    private double SpinPower = 1.0;
-    private double Multiplier = 1.0;
     private int currentPos = 0;
+    private double armPower = 0.3;
     private boolean SpinCheck = false;
-    private boolean Swap1 = false;
-    private boolean Swap2 = false;
-    private boolean FULLPOWER = false;
-    private boolean halfpower = false;
     HWMapTouchdown robot = new HWMapTouchdown();
-    MediaPlayer mediaPlayer = new MediaPlayer();
+    private MediaPlayer mediaPlayer = new MediaPlayer();
 
 
     @Override
@@ -53,35 +43,24 @@ public class TouchdownJesusV1 extends OpMode {
         double right1 = gamepad1.right_stick_y;
         double leftx1 = -gamepad1.left_stick_x;
         double rightx1 = -gamepad1.right_stick_x;
-        if(FULLPOWER == true){
-            Multiplier = 10;
-        }
-        else if(halfpower == true){
-            Multiplier = 0.1;
-        }
-        else{
-            Multiplier = 1;
-        }
 
-        if(gamepad1.dpad_down && Swap1 == false){
-            SpinCheck = true;
-            Swap1 = true;
+        if(gamepad1.dpad_down){
+            SpinCheck = !SpinCheck;
         }
-        if(gamepad1.dpad_down && Swap1 == true){
-            SpinCheck = false;
-            Swap1 = false;
+        if(gamepad1.back){
+            armPower = 0.8;
         }
         if(gamepad1.x) {
-            robot.SpinRight.setPower(-SpinPower);
-            robot.SpinLeft.setPower(SpinPower);
+            robot.SpinRight.setPower(-1);
+            robot.SpinLeft.setPower(1);
         }
         else if(gamepad1.b) {
-            robot.SpinRight.setPower(SpinPower);
-            robot.SpinLeft.setPower(-SpinPower);
+            robot.SpinRight.setPower(1);
+            robot.SpinLeft.setPower(-1);
         }
-        else if (SpinCheck == false) {
-            robot.SpinLeft.setPower(0);
+        else if (!SpinCheck) {
             robot.SpinRight.setPower(0);
+            robot.SpinLeft.setPower(0);
         }
 
         if(gamepad1.left_bumper){
@@ -94,12 +73,12 @@ public class TouchdownJesusV1 extends OpMode {
         }
 
         if(gamepad1.y){
-            robot.ArmRight.setPower(ArmPower);
-            robot.ArmLeft.setPower(-ArmPower);
+            robot.ArmRight.setPower(armPower);
+            robot.ArmLeft.setPower(-armPower);
         }
         else if(gamepad1.a){
-            robot.ArmRight.setPower(-ArmPower);
-            robot.ArmLeft.setPower(ArmPower);
+            robot.ArmRight.setPower(-armPower);
+            robot.ArmLeft.setPower(armPower);
         }
         else {
             robot.ArmRight.setPower(0);
@@ -114,99 +93,17 @@ public class TouchdownJesusV1 extends OpMode {
         if(gamepad1.dpad_up){
             Center();
         }
-        if(gamepad1.start && Swap2 == false){
-            FULLPOWER = true;
-            Swap2 = true;
-        }
-        else if(gamepad1.start && Swap2 == true){
-            FULLPOWER = false;
-            Swap2 = false;
-        }
-        if(gamepad1.back && Swap2 == false){
-            halfpower = true;
-            Swap2 = true;
-        }
-        else if(gamepad1.back && Swap2 == true){
-            halfpower = false;
-            Swap2 = false;
+        if(gamepad1.start){
+            Pierre();
         }
         if(gamepad1.left_stick_button){
             try {
                 mediaPlayer.prepare();
+                telemetry.addLine("Preparing");
+                telemetry.update();
                 mediaPlayer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        double left2 = -gamepad2.left_stick_y;
-        double right2 = gamepad2.right_stick_y;
-        double leftx2 = -gamepad2.left_stick_x;
-        double rightx2 = -gamepad2.right_stick_x;
-
-        if(gamepad2.dpad_down && Swap1 == false){
-            SpinCheck = true;
-            Swap1 = true;
-        }
-        if(gamepad2.dpad_down && Swap1 == true){
-            SpinCheck = false;
-            Swap1 = false;
-        }
-        if(gamepad2.x) {
-            robot.SpinRight.setPower(-SpinPower);
-            robot.SpinLeft.setPower(SpinPower);
-        }
-        else if(gamepad2.b) {
-            robot.SpinRight.setPower(SpinPower);
-            robot.SpinLeft.setPower(-SpinPower);
-        }
-        else if (SpinCheck == false) {
-            robot.SpinLeft.setPower(0);
-            robot.SpinRight.setPower(0);
-        }
-
-        if(gamepad2.left_bumper){
-            robot.GrabRight.setPosition(0.6);
-            robot.GrabLeft.setPosition(0.6);
-        }
-        if(gamepad2.right_bumper){
-            robot.GrabRight.setPosition(0.2);
-            robot.GrabLeft.setPosition(0.2);
-        }
-
-        if(gamepad2.y){
-            robot.ArmRight.setPower(ArmPower);
-            robot.ArmLeft.setPower(-ArmPower);
-        }
-        else if(gamepad2.a){
-            robot.ArmRight.setPower(-ArmPower);
-            robot.ArmLeft.setPower(ArmPower);
-        }
-        else {
-            robot.ArmRight.setPower(0);
-            robot.ArmLeft.setPower(0);
-        }
-        if(gamepad2.start && Swap2 == false){
-            FULLPOWER = true;
-            Swap2 = true;
-        }
-        else if(gamepad2.start && Swap2 == true){
-            FULLPOWER = false;
-            Swap2 = false;
-        }
-        if(gamepad2.back && Swap2 == false){
-            halfpower = true;
-            Swap2 = true;
-        }
-        else if(gamepad2.back && Swap2 == true){
-            halfpower = false;
-            Swap2 = false;
-        }
-        if(gamepad2.left_stick_button){
-            try {
-                mediaPlayer.prepare();
-                mediaPlayer.start();
+                telemetry.addLine("Running");
+                telemetry.update();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -253,33 +150,19 @@ public class TouchdownJesusV1 extends OpMode {
                 robot.FrontRight.setPower(-right2*Multiplier);
                 robot.RearRight.setPower(-right2*Multiplier);
             }*/
-
     }
-    /*public void Movent(){
-        robot.hexMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexMotor.setTargetPosition(0);
-        robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        int pos = robot.hexMotor.getCurrentPosition();
-        robot.hexMotor.setTargetPosition(pos);
-        if (robot.hexMotor.getCurrentPosition() > pos) {
-            robot.hexMotor.setPower(-0.75);
-        } else if (robot.hexMotor.getCurrentPosition() < pos) {
-            robot.hexMotor.setPower(0.75);
-        } else if (robot.hexMotor.getCurrentPosition() > pos - 50 || robot.hexMotor.getCurrentPosition() < pos + 50) {
-            robot.hexMotor.setPower(0);
-        }
-    }*/
-    void Flip (){
+
+    private void Flip (){
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(currentPos == 0) {
             for (int i = 140; i <= 560; i += 140) {
                 robot.ArmLeft.setTargetPosition(i);
-                robot.ArmRight.setTargetPosition(i);
+                robot.ArmRight.setTargetPosition(-i);
+                robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(0.25);
-                robot.ArmRight.setPower(0.25);
+                robot.ArmRight.setPower(-0.25);
                 while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
@@ -292,9 +175,9 @@ public class TouchdownJesusV1 extends OpMode {
         else if(currentPos == 1){
             for (int i = 140; i <= 280; i += 140) {
                 robot.ArmLeft.setTargetPosition(i);
-                robot.ArmRight.setTargetPosition(i);
+                robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setPower(0.25);
-                robot.ArmRight.setPower(0.25);
+                robot.ArmRight.setPower(-0.25);
                 while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
@@ -311,17 +194,17 @@ public class TouchdownJesusV1 extends OpMode {
         currentPos = 2;
     }
 
-    void RevFlip() {
+    private void RevFlip() {
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(currentPos == 2) {
             for (int i = -140; i >= -560; i -= 140) {
                 robot.ArmLeft.setTargetPosition(i);
-                robot.ArmRight.setTargetPosition(i);
+                robot.ArmRight.setTargetPosition(-i);
+                robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(-0.25);
-                robot.ArmRight.setPower(-0.25);
+                robot.ArmRight.setPower(0.25);
                 while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
@@ -338,9 +221,9 @@ public class TouchdownJesusV1 extends OpMode {
         else if(currentPos == 1){
             for (int i = -140; i >= -280; i -= 140) {
                 robot.ArmLeft.setTargetPosition(i);
-                robot.ArmRight.setTargetPosition(i);
+                robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setPower(-0.25);
-                robot.ArmRight.setPower(-0.25);
+                robot.ArmRight.setPower(0.25);
                 while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
@@ -354,17 +237,17 @@ public class TouchdownJesusV1 extends OpMode {
         robot.GrabLeft.setPosition(0.6);
         currentPos = 0;
     }
-    void Center (){
+    private void Center (){
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(currentPos == 0) {
             for (int i = 140; i <= 280; i += 140) {
                 robot.ArmLeft.setTargetPosition(i);
-                robot.ArmRight.setTargetPosition(i);
+                robot.ArmRight.setTargetPosition(-i);
+                robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(0.25);
-                robot.ArmRight.setPower(0.25);
+                robot.ArmRight.setPower(-0.25);
                 while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
@@ -375,11 +258,11 @@ public class TouchdownJesusV1 extends OpMode {
             }
         }
         else if(currentPos == 2){
-            for (int i = -140; i <= -280; i -= 140) {
+            for (int i = -140; i >= -280; i -= 140) {
                 robot.ArmLeft.setTargetPosition(i);
-                robot.ArmRight.setTargetPosition(i);
+                robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setPower(-0.25);
-                robot.ArmRight.setPower(-0.25);
+                robot.ArmRight.setPower(0.25);
                 while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
@@ -395,8 +278,25 @@ public class TouchdownJesusV1 extends OpMode {
         robot.SpinLeft.setPower(0);
         currentPos = 1;
     }
+    private void Pierre () {
+        robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ArmLeft.setTargetPosition(560);
+        robot.ArmRight.setTargetPosition(-560);
+        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.ArmLeft.setPower(0.2);
+        robot.ArmRight.setPower(-0.2);
+        while (robot.ArmLeft.isBusy() && robot.ArmRight.isBusy()) {
+            telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
+            telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
+            telemetry.update();
+        }
+        robot.ArmLeft.setPower(0);
+        robot.ArmRight.setPower(0);
+    }
 
-    public void Telemetry () {
+    private void Telemetry () {
         telemetry.addData("FR_Power", "%.2f", robot.FrontRight.getPower());
         telemetry.addData("RR_Power", "%.2f", robot.RearRight.getPower());
         telemetry.addData("FL_Power", "%.2f", robot.FrontLeft.getPower());
