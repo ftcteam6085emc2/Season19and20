@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -9,11 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class AutoTouchdownJesus extends LinearOpMode {
 
-    private static int firstUp = 10;
     private boolean strafeCancel = false;
     HWMapTouchdown robot = new HWMapTouchdown();
 
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         robot.init(hardwareMap);
         robot.ArmLeft.setTargetPosition(0);
         robot.ArmRight.setTargetPosition(0);
@@ -23,29 +21,47 @@ public class AutoTouchdownJesus extends LinearOpMode {
         robot.SpinRight.setPower(-1.0);
         robot.SpinLeft.setPower(1.0);
         DriveStraightDistance(4294, 0.8); //46 inches
-        sleep(3000);
+        sleep(1000);
         robot.GrabRight.setPosition(0.2);
         robot.GrabLeft.setPosition(0.2);
         DriveStraightDistance(-1120, -0.8); //12 inches
+        sleep(1000);
         Turn(1120, 0.5);
+        sleep(1000);
         DriveStraightDistance(-8774, -0.8); //3.5 tiles
+        sleep(1000);
         Flip();
+        sleep(1000);
         RevFlip();
+        sleep(1000);
         DriveStraightDistance(7654, 0.8); //1 rotation less than 3.5 tiles
+        sleep(1000);
         Turn(-1120, 0.5);
+        sleep(1000);
         robot.SpinLeft.setPower(1.0);
+        sleep(1000);
         robot.SpinRight.setPower(-1.0);
+        sleep(1000);
         DriveStraightDistance(1120, 0.8); //12 inches
+        sleep(1000);
         DriveStraightDistance(-1120, -0.8); //12 inches
+        sleep(1000);
         Turn(1120, 0.5);
+        sleep(1000);
         DriveStraightDistance(-7654, -0.8);
+        sleep(1000);
         Flip();
+        sleep(1000);
         RevFlip();
+        sleep(1000);
         DriveStraightDistance(3290, 0.8); //1.5 tiles
+        sleep(1000);
+        Turn(100, 0.8);
+        strafeCancel = true;
     }
 
-    void DriveStraight(double power){
-        if(strafeCancel == true){
+    private void DriveStraight(double power){
+        if(strafeCancel){
             robot.FrontRight.setPower(power - 0.2);
             robot.FrontLeft.setPower(-power);
             robot.RearRight.setPower(power);
@@ -59,11 +75,11 @@ public class AutoTouchdownJesus extends LinearOpMode {
         }
     }
 
-    void StopDriving (){
+    private void StopDriving (){
         DriveStraight(0);
     }
 
-    void DriveStraightDistance(int distance, double power){
+    private void DriveStraightDistance(int distance, double power){
         telemetry.addData("Driving", "Yes");
         robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -92,7 +108,7 @@ public class AutoTouchdownJesus extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    void Turn (int distance, double power){
+    private void Turn (int distance, double power){
         telemetry.addData("Driving", "Yes");
         robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -122,7 +138,7 @@ public class AutoTouchdownJesus extends LinearOpMode {
     }
 
     //left is negative, right is positive
-    void Strafe (int distance, double power){
+    /*private void Strafe (int distance, double power){
         strafeCancel = true;
         telemetry.addData("Driving", "Yes");
         robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -151,11 +167,11 @@ public class AutoTouchdownJesus extends LinearOpMode {
         robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         strafeCancel = false;
-    }
+    }*/
 
     //NeveRest 40 Gearmotor has 280 ppr (Wheels) 1120 for full rotation
     //NeveRest 20 Gearmotor has 140 ppr (Arm) 560 for full rotation
-    void Flip (){
+    private void Flip (){
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -181,7 +197,7 @@ public class AutoTouchdownJesus extends LinearOpMode {
         robot.SpinLeft.setPower(0);
     }
 
-    void RevFlip() {
+    private void RevFlip() {
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
