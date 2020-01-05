@@ -92,27 +92,24 @@ public class FoundationMovement extends LinearOpMode {
         
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        //encoderDrive(DRIVE_SPEED,  10,  10, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
-        //encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        //encoderDrive(DRIVE_SPEED,  88,  88, 10.0);  // S1: Forward 88 Inches with 10 Sec timeout
+        encoderDrive(DRIVE_SPEED,  10,  10, 3.0);  // S1: Forward 15 Inches with 10 Sec timeout
+        encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  88,  88, 5.0);  // S1: Forward 88 Inches with 10 Sec timeout
         // Lift arm up
-        linearSlideDrive(1.0, 6, 3.0, true);
+        linearSlideDrive(1.0, 300, 5.0, true);
         
-        //encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        //encoderDrive(DRIVE_SPEED,  25.5,  25.5, 10.0);  // S1: Forward 50 Inches with 10 Sec timeout
-        //robot.hexMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        //robot.hexMotor.setTargetPosition(-5);
+        encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  27,  27, 4.0);  // S1: Forward 50 Inches with 10 Sec timeout
+        
+        linearSlideDrive(1.0, 0, 5, false);
+        encoderDrive(DRIVE_SPEED,  -35,  -35, 4.0); // S1: Forward 15 Inches with 10 Sec timeout
+        
+        // Lift arm up
+        linearSlideDrive(1.0, 300, 5.0, true);
+        encoderDrive(TURN_SPEED,   19, -19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
+        linearSlideDrive(1.0, 0, 5.0, false);
+        encoderDrive(DRIVE_SPEED,  -50,  -50, 4.0); // S1: Forward 15 Inches with 10 Sec timeout
 
-        //robot.hexMotor.setPower(1);
-        //sleep(1000);
-        //robot.hexMotor.setPower(0);
-        sleep(4000);
-        linearSlideDrive(1.0, -7, 0.5, false);
-        //encoderDrive(DRIVE_SPEED,  -35,  -35, 10.0);  // S1: Forward 15 Inches with 10 Sec timeout
-        // Lift arm up
-        //linearSlideDrive(1.0, 6, 3.0);        
-        //strafeDrive(1.0, 55, 5.0, "left");
-        
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
@@ -195,8 +192,8 @@ public class FoundationMovement extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+              (runtime.seconds() < timeoutS) &&
+              (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
@@ -275,8 +272,8 @@ public class FoundationMovement extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+              (runtime.seconds() < timeoutS) &&
+              (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
