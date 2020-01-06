@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class HWMapTouchdown {
     /* Public OpMode members. */
-    public DcMotor  FrontLeft   = null;
-    public DcMotor  FrontRight  = null;
-    public DcMotor  RearLeft  = null;
-    public DcMotor  RearRight  = null;
+    public DcMotor FrontLeft   = null;
+    public DcMotor FrontRight  = null;
+    public DcMotor RearLeft  = null;
+    public DcMotor RearRight  = null;
     public DcMotor SpinLeft = null;
     public DcMotor SpinRight = null;
     public DcMotor ArmLeft = null;
@@ -20,6 +20,7 @@ public class HWMapTouchdown {
 
     public Servo GrabLeft = null;
     public Servo GrabRight = null;
+    public Servo FoundationServo = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -47,6 +48,7 @@ public class HWMapTouchdown {
 
         GrabLeft = hwMap.get(Servo.class, "GrabLeft");
         GrabRight = hwMap.get(Servo.class, "GrabRight");
+        FoundationServo = hwMap.get(Servo.class, "FoundationServo");
 
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
@@ -55,6 +57,7 @@ public class HWMapTouchdown {
 
         GrabLeft.setPosition(0);
         GrabRight.setPosition(0);
+        FoundationServo.setPosition(0);
     }
 
     /***
