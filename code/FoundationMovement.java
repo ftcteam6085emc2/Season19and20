@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -50,6 +52,8 @@ public class FoundationMovement extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
 
+    boolean USE_DISTANCE_SENSOR = false;
+
     @Override
     public void runOpMode() {
 
@@ -63,7 +67,7 @@ public class FoundationMovement extends LinearOpMode {
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.addData("Status", "try to strafe by Sam");    //        
         telemetry.update();  
-        sleep(4000);
+        sleep(1000);
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -99,7 +103,11 @@ public class FoundationMovement extends LinearOpMode {
         linearSlideDrive(1.0, 300, 5.0, true);
         
         encoderDrive(TURN_SPEED,   -19, 19, 4.0);  // S2: Turn 90 degrees with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED,  27,  27, 4.0);  // S1: Forward 50 Inches with 10 Sec timeout
+        if (USE_DISTANCE_SENSOR == false) {
+        	encoderDrive(DRIVE_SPEED,  27,  27, 4.0);  // Drive towards foundation
+        } else {
+        	proportionalDrive();
+        }
         
         linearSlideDrive(1.0, 0, 5, false);
         encoderDrive(DRIVE_SPEED,  -35,  -35, 4.0); // S1: Forward 15 Inches with 10 Sec timeout
@@ -296,5 +304,46 @@ public class FoundationMovement extends LinearOpMode {
             robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //  sleep(250);   // optional pause after each move
         }
+    }
+
+    /*
+     *  Method to perfmorm a proportionalDrive with distance sensor.
+     */
+    public void proportionalDrive() {    
+        // Turn off RUN_TO_POSITION
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    	while (1 == 1) {
+    		range = robot.sensorRange.getDistance(DistanceUnit.INCH);
+    		if (range <= 0.1) {
+    			robot.leftDrive.setPower(0);
+    			robot.rightDrive.setPower(0);
+    			robot.leftBack.setPower(0);
+    			robot.rightBack.setPower(0);    			
+    			break; // we have arrived!
+    		} else {
+    			speed = range * 1.0;
+    			if (speed > 1) {
+    				speed = 1;
+    			} else if (speed < 0) {
+    				speed = 0;
+    			}
+    			robot.leftDrive.setPower(speed);
+    			robot.rightDrive.setPower(speed);
+    			robot.leftBack.setPower(speed);
+    			robot.rightBack.setPower(speed);
+    		}
+    	}
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);    	
     }
 }

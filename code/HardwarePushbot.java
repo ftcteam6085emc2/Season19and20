@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * This is NOT an opmode.
@@ -32,6 +34,7 @@ public class HardwarePushbot
     public DcMotor  hexMotor     = null;
     public Servo    servoClaw    = null;
     public Servo    rightClaw   = null;
+    public DistanceSensor sensorRange = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -58,6 +61,7 @@ public class HardwarePushbot
         leftBack   = hwMap.get(DcMotor.class, "RearLeft");
         hexMotor    = hwMap.get(DcMotor.class, "hexMotor");
         servoClaw   = hwMap.get(Servo.class, "servoClaw");
+        sensorRange = hwMap.get(DistanceSensor.class, "sensor_range");
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
