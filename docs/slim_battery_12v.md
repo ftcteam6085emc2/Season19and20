@@ -3,16 +3,16 @@ http://www.revrobotics.com/rev-31-1302/
 
 * Specification
 
-** Voltage: 12V
-** Capacity: 3000mAh
-** Weight: 567g
-** Maximum Dimensions: 113.5mm x 90.5mm x 23mm
-** Wire Gauge: 16 AWG
-** Connector: XT30
-** Replaceable Fuse: 20A ATM
-** Maximum Discharge Rate: 10C
-*** While the battery cells are rated at a 10C (30A) discharge, the in-line fuse limits this to 20A.
-    Wire Length (excluding XT30): 150mm
+    * Voltage: 12V
+    * Capacity: 3000mAh
+    * Weight: 567g
+    * Maximum Dimensions: 113.5mm x 90.5mm x 23mm
+    * Wire Gauge: 16 AWG
+    * Connector: XT30
+    * Replaceable Fuse: 20A ATM
+    * Maximum Discharge Rate: 10C
+        * While the battery cells are rated at a 10C (30A) discharge, the in-line fuse limits this to 20A.
+        Wire Length (excluding XT30): 150mm
 
 * Best Practices
 
@@ -22,8 +22,8 @@ battery. The following best practices can help maximize the lifespan of your
 battery:
 
 * Charge rate
-** Minimum: 1.5A
-** Maximum: 3.0A
+    * Minimum: 1.5A
+    * Maximum: 3.0A
         Recommended: 1.8A or 2.0A
     Do not overcharge
         Disconnect the battery from the charger once it indicates a full charge.
