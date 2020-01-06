@@ -24,17 +24,17 @@ battery:
 * Charge rate
     * Minimum: 1.5A
     * Maximum: 3.0A
-        Recommended: 1.8A or 2.0A
-    Do not overcharge
-        Disconnect the battery from the charger once it indicates a full charge.
-        Typical charge time does not exceed 2 hours.
-        Do not charge a battery that hasn't been discharged significantly.
-            For example, running the robot under minimal load for a few minutes will not significantly discharge the battery.
-    Minimum no-load voltage: 9.0V
-        Discharging the battery past 9.0V can reduce the lifespan of the battery and can permanently damage the cells.
-        Periodic dips below 9.0V when under load is expected and OK.
-            For example, don't forget to unplug your battery after you are finished running the robot and don't run your robot until it completely stops responding!
-    Temperature
-        Let the battery cool before and after charging.
-        The battery may feel warm after heavy loading or after charging. This is normal.
+    * Recommended: 1.8A or 2.0A
+* Do not overcharge
+    * Disconnect the battery from the charger once it indicates a full charge.
+    * Typical charge time does not exceed 2 hours.
+    * Do not charge a battery that hasn't been discharged significantly.
+        * For example, running the robot under minimal load for a few minutes will not significantly discharge the battery.
+    * Minimum no-load voltage: 9.0V
+        * Discharging the battery past 9.0V can reduce the lifespan of the battery and can permanently damage the cells.
+        * Periodic dips below 9.0V when under load is expected and OK.
+            * For example, don't forget to unplug your battery after you are finished running the robot and don't run your robot until it completely stops responding!
+* Temperature
+    * Let the battery cool before and after charging.
+    * The battery may feel warm after heavy loading or after charging. This is normal.
 
