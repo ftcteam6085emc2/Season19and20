@@ -38,3 +38,16 @@ battery:
     * Let the battery cool before and after charging.
     * The battery may feel warm after heavy loading or after charging. This is normal.
 
+
+How to charge batteries
+
+1. Hook up the battery to one of the empty charging ports
+2. Press the Esc/Mode button and select PROGRAM SELECT NiMH Battery
+3. Press the Start / Enter button
+4. Press the Dec or Inc button until Ni-MH/Ni-CD Charge Man appears
+5. Press the start/enter button to edit the parameters
+6. Press the Dec or Inc button to adjust the number of amps to charge the battery.
+    * Normally set this to 1.8 A - 2.0 A
+    * If you are in a hurry you can push 6 amps into the battery and do a quick charge.
+      It is not recommended that this happens very often.
+7. Once the parameters are set push and hold the start/enter button and charging will start.
