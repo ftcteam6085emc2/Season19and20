@@ -54,10 +54,6 @@ public class HWMapTouchdown {
         FrontRight.setPower(0);
         RearLeft.setPower(0);
         RearRight.setPower(0);
-
-        GrabLeft.setPosition(0);
-        GrabRight.setPosition(0);
-        FoundationServo.setPosition(0);
     }
 
     /***

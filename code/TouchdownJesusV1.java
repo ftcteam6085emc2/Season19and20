@@ -45,20 +45,20 @@ public class TouchdownJesusV1 extends OpMode {
         double leftx1 = gamepad1.left_stick_x;
         double rightx1 = gamepad1.right_stick_x;
 
-        if(gamepad1.start){
+        if(gamepad2.start){
             robot.FoundationServo.setPosition(0.5);
         }
-        if(gamepad1.back){
-            robot.FoundationServo.setPosition(-0.5);
+        if(gamepad2.back){
+            robot.FoundationServo.setPosition(1);
         }
-        if(gamepad1.dpad_down){
+        if(gamepad2.dpad_down){
             SpinCheck = !SpinCheck;
         }
-        if(gamepad1.x) {
+        if(gamepad2.x) {
             robot.SpinRight.setPower(-1);
             robot.SpinLeft.setPower(1);
         }
-        else if(gamepad1.b) {
+        else if(gamepad2.b) {
             robot.SpinRight.setPower(1);
             robot.SpinLeft.setPower(-1);
         }
@@ -67,20 +67,20 @@ public class TouchdownJesusV1 extends OpMode {
             robot.SpinLeft.setPower(0);
         }
 
-        if(gamepad1.left_bumper){
+        if(gamepad2.left_bumper){
             robot.GrabRight.setPosition(0.6);
             robot.GrabLeft.setPosition(0.6);
         }
-        if(gamepad1.right_bumper){
+        if(gamepad2.right_bumper){
             robot.GrabRight.setPosition(0.2);
             robot.GrabLeft.setPosition(0.2);
         }
 
-        if(gamepad1.y){
+        if(gamepad2.y){
             robot.ArmRight.setPower(armPower);
             robot.ArmLeft.setPower(-armPower);
         }
-        else if(gamepad1.a){
+        else if(gamepad2.a){
             robot.ArmRight.setPower(-armPower);
             robot.ArmLeft.setPower(armPower);
         }
@@ -88,22 +88,22 @@ public class TouchdownJesusV1 extends OpMode {
             robot.ArmRight.setPower(0);
             robot.ArmLeft.setPower(0);
         }
-        if(gamepad1.dpad_left){
+        if(gamepad2.dpad_left){
             RevFlip();
         }
-        if(gamepad1.dpad_right){
+        if(gamepad2.dpad_right){
             Flip();
         }
-        if(gamepad1.dpad_up){
+        if(gamepad2.dpad_up){
             Center();
         }
 
         if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
-            robot.FrontLeft.setPower(left1-leftx1);
-            robot.RearLeft.setPower(left1+leftx1);
+            robot.FrontLeft.setPower(left1+leftx1);
+            robot.RearLeft.setPower(left1-leftx1);
 
-            robot.FrontRight.setPower(right1-rightx1);
-            robot.RearRight.setPower(right1+rightx1);
+            robot.FrontRight.setPower(right1+rightx1);
+            robot.RearRight.setPower(right1-rightx1);
         }
         else {
             robot.FrontLeft.setPower(left1);

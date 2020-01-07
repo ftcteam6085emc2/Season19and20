@@ -31,32 +31,26 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         waitForStart();
         DriveStraightDistance(2500, 0.8);
         sleep(1000);
-        Turn(1500, 0.5);
-        sleep(1000);
-        Strafe(-500, -0.4);
-        sleep(1000);
-        robot.FoundationServo.setPosition(-0.5);
-        sleep(1000);
-        Strafe(3000, 0.2);
-        sleep(1000);
         robot.FoundationServo.setPosition(0.5);
+        DriveStraightDistance(-3000, -0.8);
+        robot.FoundationServo.setPosition(1);
         sleep(1000);
-        DriveStraightDistance(5000, 0.8);
+        Strafe(5000, 0.3);
     }
 
     private void DriveStraight(double power){
-        if(strafeCancel){
+        /*if(strafeCancel){
             robot.FrontRight.setPower(power - 0.2);
             robot.FrontLeft.setPower(-power);
             robot.RearRight.setPower(power);
             robot.RearLeft.setPower(-power - 0.2);
         }
-        else {
+        else {*/
             robot.FrontRight.setPower(-power);
             robot.FrontLeft.setPower(power);
             robot.RearRight.setPower(-power);
             robot.RearLeft.setPower(power);
-        }
+        //}
     }
 
     private void StopDriving (){
@@ -131,16 +125,20 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(-distance);
+        robot.FrontLeft.setTargetPosition(distance);
         robot.RearRight.setTargetPosition(distance);
-        robot.RearLeft.setTargetPosition(distance);
+        robot.RearLeft.setTargetPosition(-distance);
 
         robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        DriveStraight(power);
+        robot.FrontRight.setPower(power);
+        robot.FrontLeft.setPower(-power);
+        robot.RearRight.setPower(power);
+        robot.RearLeft.setPower(power);
+
         while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }

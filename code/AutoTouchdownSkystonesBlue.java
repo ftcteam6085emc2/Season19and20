@@ -49,7 +49,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         sleep(1000);
         RevFlip();
         sleep(1000);
-        DriveStraightDistance(3500, 0.8); //1 rotation less than 3.5 tiles
+        DriveStraightDistance(2500, 0.8); //1 rotation less than 3.5 tiles
         /*sleep(1000);
         Turn(1500, 0.5);
         sleep(1000);
@@ -195,6 +195,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 }
                 robot.ArmLeft.setPower(0);
                 robot.ArmRight.setPower(0);
+                sleep(100);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -229,7 +230,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if(currentPos == 2) {
-            for (int i = -200; i >= -800; i -= 200) {
+            for (int i = -225; i >= -900; i -= 225) {
                 robot.ArmLeft.setTargetPosition(i);
                 robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -243,6 +244,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 }
                 robot.ArmLeft.setPower(0);
                 robot.ArmRight.setPower(0);
+                sleep(100);
                 if (i == -400) {
                     robot.GrabRight.setPosition(0.2);
                     robot.GrabLeft.setPosition(0.2);
