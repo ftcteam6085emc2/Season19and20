@@ -10,11 +10,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="MarkTeleop")
 public class MarkTeleop extends OpMode {
 
-
     private static final double STRAFE_POWER = 0.7;
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
-
+    int linearSlideMax = 600;
+    int linearSlideMin = 100;
+    int linearSlideAdjust = 0; // 0 adjust linear slide min, 1 adjust linear slide max
 
     @Override
     public void init() {
@@ -42,29 +43,54 @@ public class MarkTeleop extends OpMode {
         double Forward;
         double Backward;
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+        //telemetry.addData("Status", "Initialized");
+        //telemetry.update();
 
 
-            if(gamepad1.y) {
-                linearSlideDrive(1.0, 500, 5.0, true);
-            }
-            else if (gamepad1.a) {
-                linearSlideDrive(1.0, 0, 5.0, false);
-            }
+        if(gamepad1.y) {
+            linearSlideDrive(1.0, linearSlideMax, 5.0, true);
+        }
+        else if (gamepad1.a) {
+            linearSlideDrive(1.0, linearSlideMin, 5.0, false);
+        }
 
-            if(gamepad1.x){
-                robot.servoClaw.setPosition(-1);
-                telemetry.addData("Servo", robot.servoClaw.getPosition());
+        if(gamepad1.x){
+            robot.servoClaw.setPosition(-1);
+            telemetry.addData("Servo", robot.servoClaw.getPosition());
+        }
+        
+        if(gamepad1.b){
+            robot.servoClaw.setPosition(1);
+            telemetry.addData("Servo", robot.servoClaw.getPosition());
+        }
+        
+        if (gamepad1.left_bumper) {
+            linearSlideAdjust = 0;
+        }
+        
+        if (gamepad1.right_bumper) {
+            linearSlideAdjust = 1;
+        }
+        
+        if (gamepad1.dpad_up) {
+            if (linearSlideAdjust == 0) {
+                linearSlideMin += 1;
+            } else {
+                linearSlideMax += 1;
             }
-            if(gamepad1.b){
-                robot.servoClaw.setPosition(1);
-                telemetry.addData("Servo", robot.servoClaw.getPosition());
+        }
+        
+        if (gamepad1.dpad_down) {
+            if (linearSlideAdjust == 0) {
+                linearSlideMin -= 1;
+            } else {
+                linearSlideMax -= 1;
             }
-            //telemetry.addData("Motor Power", robot.hexMotor.getPower());
-            //telemetry.addData("Servo Position", robot.servoTest.getPosition());
-            //telemetry.addData("Status", "Running");
-            telemetry.update();
+        }
+        //telemetry.addData("Motor Power", robot.hexMotor.getPower());
+        //telemetry.addData("Servo Position", robot.servoTest.getPosition());
+        //telemetry.addData("Status", "Running");
+        //telemetry.update();
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         //Left Side
@@ -76,35 +102,26 @@ public class MarkTeleop extends OpMode {
         robot.rightBack.setPower(right);
 
         //Strafe Right
-        /*if (gamepad1.dpad_right) {
+        if (gamepad1.dpad_right) {
             //Right Side
-            robot.FrontRight.setPower(STRAFE_POWER * 1.1);
-            robot.RearRight.setPower(-STRAFE_POWER);
+            robot.rightDrive.setPower(STRAFE_POWER * 1.1);
+            robot.rightBack.setPower(-STRAFE_POWER);
 
             //Left Side
-            robot.FrontLeft.setPower(STRAFE_POWER);
-            robot.RearLeft.setPower(-STRAFE_POWER * 1.1);
+            robot.leftDrive.setPower(STRAFE_POWER);
+            robot.leftBack.setPower(-STRAFE_POWER * 1.1);
         } else if (gamepad1.dpad_left) {
+        
             //Strafe Right
 
             //Right Side
-            robot.FrontRight.setPower(-STRAFE_POWER * 1.1);
-            robot.RearRight.setPower(STRAFE_POWER);
+            robot.rightDrive.setPower(-STRAFE_POWER * 1.1);
+            robot.rightBack.setPower(STRAFE_POWER);
 
             //Left Side
-            robot.FrontLeft.setPower(-STRAFE_POWER);
-            robot.RearLeft.setPower(STRAFE_POWER * 1.1);
-        } else {
-            //Strafe Left
-
-            //Left Side
-            robot.FrontLeft.setPower(left);
-            robot.RearLeft.setPower(left);
-
-            //Right Side
-            robot.FrontRight.setPower(-right);
-            robot.RearRight.setPower(-right);
-        }*/
+            robot.leftDrive.setPower(-STRAFE_POWER);
+            robot.leftBack.setPower(STRAFE_POWER * 1.1);
+        } 
     }
     
     public void Movent(){
@@ -127,10 +144,15 @@ public class MarkTeleop extends OpMode {
         telemetry.addData("RR_Power", "%.2f", robot.rightBack.getPower());
         telemetry.addData("FL_Power", "%.2f", robot.leftDrive.getPower());
         telemetry.addData("RL_Power", "%.2f", robot.leftBack.getPower());
-        telemetry.addData("Front Right Encoder Position", robot.rightDrive.getCurrentPosition());
-        telemetry.addData("Rear Right Encoder Position", robot.rightBack.getCurrentPosition());
-        telemetry.addData("Front Left Encoder Position", robot.leftDrive.getCurrentPosition());
-        telemetry.addData("Rear Left Encoder Position", robot.leftBack.getCurrentPosition());
+        //telemetry.addData("Front Right Encoder Position", robot.rightDrive.getCurrentPosition());
+        //telemetry.addData("Rear Right Encoder Position", robot.rightBack.getCurrentPosition());
+        //telemetry.addData("Front Left Encoder Position", robot.leftDrive.getCurrentPosition());
+        //telemetry.addData("Rear Left Encoder Position", robot.leftBack.getCurrentPosition());
+        if (linearSlideAdjust == 0) {
+            telemetry.addData("Linear Slide Adjust Min", "min: %d max: %d", linearSlideMin, linearSlideMax);
+        } else {
+            telemetry.addData("Linear Slide Adjust Max", "min: %d max: %d", linearSlideMin, linearSlideMax);
+        }
         telemetry.update();
     }
     
@@ -147,15 +169,15 @@ public class MarkTeleop extends OpMode {
         robot.hexMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.hexMotor.setPower(power);
         runtime.reset();
-        telemetry.addData("hexMotor", "In Linear Slide Function");
-        telemetry.update();
+        //telemetry.addData("hexMotor", "In Linear Slide Function");
+        //telemetry.update();
         
         while ((runtime.seconds() < timeoutS) &&
               (robot.hexMotor.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("hexMotor",  "Power %7f Target: %7d", power,  robot.hexMotor.getCurrentPosition());
-                telemetry.update();
+                //telemetry.addData("hexMotor",  "Power %7f Target: %7d", power,  robot.hexMotor.getCurrentPosition());
+                //telemetry.update();
                 //sleep(250);
         } 
 
