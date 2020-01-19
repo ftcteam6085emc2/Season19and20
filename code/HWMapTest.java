@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //This is NOT an OpMode
-
 public class HWMapTest
 {
     /* Public OpMode members. */

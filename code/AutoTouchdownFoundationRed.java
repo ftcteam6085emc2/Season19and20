@@ -29,28 +29,47 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
 
         // 1 tile = 23.5 inches
         waitForStart();
-        DriveStraightDistance(4100, 0.8);
-        sleep(1000);
-        Turn(-1500, -0.5);
-        robot.FoundationServo.setPosition(-0.5);
-        Strafe(4100, 0.8);
-        robot.FoundationServo.setPosition(0.5);
-        DriveStraightDistance(-6580, -0.8);
+        robot.FoundationServoLeft.setPosition(0.5);
+        robot.FoundationServoRight.setPosition(-0.5);
+        Strafe(-1600, -0.5);
+        Turn(-200, -0.5);
+        DriveStraightDistance(2600, 0.7);
+        robot.FoundationServoLeft.setPosition(-0.4);
+        robot.FoundationServoRight.setPosition(0.5);
+        sleep(500);
+        DriveStraightDistanceSpecial(-6750, -0.4);
+        robot.FoundationServoLeft.setPosition(0.5);
+        robot.FoundationServoRight.setPosition(-0.5);
+        DriveStraightDistance(-2500, -0.7);
     }
 
     private void DriveStraight(double power){
-        if(strafeCancel){
+        /*if(strafeCancel){
             robot.FrontRight.setPower(power - 0.2);
             robot.FrontLeft.setPower(-power);
             robot.RearRight.setPower(power);
             robot.RearLeft.setPower(-power - 0.2);
         }
-        else {
-            robot.FrontRight.setPower(-power);
-            robot.FrontLeft.setPower(power);
-            robot.RearRight.setPower(-power);
-            robot.RearLeft.setPower(power);
+        else {*/
+        robot.FrontRight.setPower(-power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(power);
+        //}
+    }
+    private void DriveStraightSpecial(double power){
+        /*if(strafeCancel){
+            robot.FrontRight.setPower(power - 0.2);
+            robot.FrontLeft.setPower(-power);
+            robot.RearRight.setPower(power);
+            robot.RearLeft.setPower(-power - 0.2);
         }
+        else {*/
+        robot.FrontRight.setPower(-power);
+        robot.FrontLeft.setPower(power/2);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(power/2);
+        //}
     }
 
     private void StopDriving (){
@@ -75,7 +94,36 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
+        }
+
+        StopDriving();
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void DriveStraightDistanceSpecial(int distance, double power){
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.FrontRight.setTargetPosition(-distance);
+        robot.FrontLeft.setTargetPosition(distance/2);
+        robot.RearRight.setTargetPosition(-distance);
+        robot.RearLeft.setTargetPosition(distance/2);
+
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        DriveStraightSpecial(power);
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -104,7 +152,7 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -124,18 +172,22 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(-distance);
-        robot.RearRight.setTargetPosition(distance);
-        robot.RearLeft.setTargetPosition(distance);
+        robot.FrontRight.setTargetPosition(distance);
+        robot.FrontLeft.setTargetPosition(distance);
+        robot.RearRight.setTargetPosition(-distance);
+        robot.RearLeft.setTargetPosition(-distance);
 
         robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        robot.FrontRight.setPower(power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(-power);
+
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 

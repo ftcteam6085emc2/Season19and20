@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Disabled
 @Autonomous(name = "hexMotorPositions", group = "Autonomous")
 
 public class hexMotorPositions extends LinearOpMode {

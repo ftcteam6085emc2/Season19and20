@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 @Autonomous(name = "AutoTestPlease", group = "Autonomous")
 
 public class AutoTestPlease extends LinearOpMode {

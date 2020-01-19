@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -51,7 +52,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-
+@Disabled
 @TeleOp(name="VuMarkIdentificationV2", group ="Concept")
 public class VuMarkIdentificationV2 extends LinearOpMode {
 

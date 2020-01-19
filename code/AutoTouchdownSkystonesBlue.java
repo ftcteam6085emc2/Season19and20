@@ -32,23 +32,19 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         robot.SpinRight.setPower(1.0);
         robot.SpinLeft.setPower(-1.0);
         DriveStraightDistance(3000, 0.8); //46 inches
-        sleep(1000);
         Turn(1000, 0.8);
-        DriveStraightDistance(1680, 0.8);
+        DriveStraightDistance(1500, 0.8);
+        sleep(100);
         robot.GrabRight.setPosition(0.2);
         robot.GrabLeft.setPosition(0.2);
-        DriveStraightDistance(-1680, 0.8);
+        sleep(100);
+        DriveStraightDistance(-1500, 0.8);
         Turn(-1000, -0.8);
         DriveStraightDistance(-1680, -0.8); //12 inches
-        sleep(1000);
-        Turn(1500, 0.5);
-        sleep(1000);
-        DriveStraightDistance(-6580, -0.8); //3.5 tiles
-        sleep(1000);
+        Turn(1600, 0.5);
+        DriveStraightDistance(-6000, -0.8); //3.5 tiles
         Flip();
-        sleep(1000);
         RevFlip();
-        sleep(1000);
         DriveStraightDistance(2500, 0.8); //1 rotation less than 3.5 tiles
         /*sleep(1000);
         Turn(1500, 0.5);
@@ -103,7 +99,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -132,7 +128,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -181,7 +177,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if(currentPos == 0) {
-            for (int i = 200; i <= 800; i += 200) {
+            for (int i = 225; i <= 900; i += 225) {
                 robot.ArmLeft.setTargetPosition(i);
                 robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -245,10 +241,8 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmLeft.setPower(0);
                 robot.ArmRight.setPower(0);
                 sleep(100);
-                if (i == -400) {
-                    robot.GrabRight.setPosition(0.2);
-                    robot.GrabLeft.setPosition(0.2);
-                }
+                robot.GrabRight.setPosition(0.2);
+                robot.GrabLeft.setPosition(0.2);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }

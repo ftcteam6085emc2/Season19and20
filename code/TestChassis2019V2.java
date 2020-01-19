@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Disabled
 @TeleOp(name="TestChassis2019V2", group="Test")
 public class TestChassis2019V2 extends OpMode {
 

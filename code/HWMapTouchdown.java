@@ -20,7 +20,8 @@ public class HWMapTouchdown {
 
     public Servo GrabLeft = null;
     public Servo GrabRight = null;
-    public Servo FoundationServo = null;
+    public Servo FoundationServoLeft = null;
+    public Servo FoundationServoRight = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -48,7 +49,8 @@ public class HWMapTouchdown {
 
         GrabLeft = hwMap.get(Servo.class, "GrabLeft");
         GrabRight = hwMap.get(Servo.class, "GrabRight");
-        FoundationServo = hwMap.get(Servo.class, "FoundationServo");
+        FoundationServoLeft = hwMap.get(Servo.class, "FoundationServoLeft");
+        FoundationServoRight = hwMap.get(Servo.class, "FoundationServoRight");
 
         FrontLeft.setPower(0);
         FrontRight.setPower(0);

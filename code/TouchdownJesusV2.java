@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.io.IOException;
 
-@TeleOp(name="TouchdownJesusInversed", group="Test")
-public class TouchdownJesusInversed extends OpMode {
+@TeleOp(name="TouchdownJesusV2", group="Test")
+public class TouchdownJesusV2 extends OpMode {
 
     private int currentPos = 0;
     private double armPower = 0.3;
@@ -40,19 +40,37 @@ public class TouchdownJesusInversed extends OpMode {
     @Override
     public void loop() {
         Telemetry();
-        double left1 = -gamepad1.left_stick_y; //these are reversed for kevin
+        double left1 = -gamepad1.left_stick_y; //these are reversed for kevin I guess
         double right1 = gamepad1.right_stick_y;
         double leftx1 = -gamepad1.left_stick_x;
         double rightx1 = -gamepad1.right_stick_x;
 
         if(gamepad2.start){
-            robot.FoundationServo.setPosition(0.5);
+            robot.FoundationServoLeft.setPosition(0.5);
+            robot.FoundationServoRight.setPosition(-0.5);
         }
         if(gamepad2.back){
-            robot.FoundationServo.setPosition(-0.5);
+            robot.FoundationServoLeft.setPosition(-0.4);
+            robot.FoundationServoRight.setPosition(0.5);
+        }
+        if(gamepad2.left_stick_button){
+            robot.FoundationServoLeft.setPosition(1);
+            robot.FoundationServoRight.setPosition(1);
         }
         if(gamepad2.dpad_down){
             SpinCheck = !SpinCheck;
+        }
+        if(gamepad1.start){
+            robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        if(gamepad1.start){
+            robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
         if(gamepad2.x) {
             robot.SpinRight.setPower(-1);
@@ -68,12 +86,12 @@ public class TouchdownJesusInversed extends OpMode {
         }
 
         if(gamepad2.left_bumper){
-            robot.GrabRight.setPosition(0.6);
-            robot.GrabLeft.setPosition(0.6);
+            robot.GrabRight.setPosition(0.18);
+            robot.GrabLeft.setPosition(0.18);
         }
         if(gamepad2.right_bumper){
-            robot.GrabRight.setPosition(0.2);
-            robot.GrabLeft.setPosition(0.2);
+            robot.GrabRight.setPosition(-0.1);
+            robot.GrabLeft.setPosition(-0.1);
         }
 
         if(gamepad2.y){
@@ -96,6 +114,19 @@ public class TouchdownJesusInversed extends OpMode {
         }
         if(gamepad2.dpad_up){
             Center();
+        }
+
+        if(gamepad1.dpad_left){
+            Strafe(100, 0.5);
+        }
+        if(gamepad1.dpad_right){
+            Strafe(-100, -0.5);
+        }
+        if(gamepad1.dpad_up){
+            DriveStraightDistance(100, 0.5);
+        }
+        if(gamepad1.dpad_down){
+            DriveStraightDistance(-100, -0.5);
         }
 
         if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
@@ -138,6 +169,81 @@ public class TouchdownJesusInversed extends OpMode {
                 robot.FrontRight.setPower(-right2*Multiplier);
                 robot.RearRight.setPower(-right2*Multiplier);
             }*/
+    }
+    private void DriveStraight(double power){
+        /*if(strafeCancel){
+            robot.FrontRight.setPower(power - 0.2);
+            robot.FrontLeft.setPower(-power);
+            robot.RearRight.setPower(power);
+            robot.RearLeft.setPower(-power - 0.2);
+        }
+        else {*/
+        robot.FrontRight.setPower(-power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(power);
+        //}
+    }
+
+    private void StopDriving (){
+        DriveStraight(0);
+    }
+
+    private void DriveStraightDistance(int distance, double power){
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.FrontRight.setTargetPosition(-distance);
+        robot.FrontLeft.setTargetPosition(distance);
+        robot.RearRight.setTargetPosition(-distance);
+        robot.RearLeft.setTargetPosition(distance);
+
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        DriveStraight(power);
+        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy())){}
+
+        StopDriving();
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    private void Strafe (int distance, double power){
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.FrontRight.setTargetPosition(distance);
+        robot.FrontLeft.setTargetPosition(distance);
+        robot.RearRight.setTargetPosition(-distance);
+        robot.RearLeft.setTargetPosition(-distance);
+
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.FrontRight.setPower(power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(-power);
+
+        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy())){}
+
+        StopDriving();
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void Flip (){
@@ -281,29 +387,6 @@ public class TouchdownJesusInversed extends OpMode {
         robot.SpinRight.setPower(0);
         robot.SpinLeft.setPower(0);
         currentPos = 1;
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-    private void Pierre () {
-        robot.ArmLeft.setTargetPosition(550);
-        robot.ArmRight.setTargetPosition(-550);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if(currentPos == 0) {
-            robot.ArmLeft.setPower(0.2);
-            robot.ArmRight.setPower(-0.2);
-        }
-        if(currentPos == 2){
-            robot.ArmLeft.setPower(-0.2);
-            robot.ArmRight.setPower(0.2);
-        }
-        while (robot.ArmLeft.isBusy() && robot.ArmRight.isBusy()) {
-            telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
-            telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
-            telemetry.update();
-        }
-        robot.ArmLeft.setPower(0);
-        robot.ArmRight.setPower(0);
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }

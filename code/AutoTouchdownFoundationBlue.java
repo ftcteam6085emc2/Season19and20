@@ -29,13 +29,18 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
 
         // 1 tile = 23.5 inches
         waitForStart();
-        DriveStraightDistance(2500, 0.8);
-        sleep(1000);
-        robot.FoundationServo.setPosition(0.5);
-        DriveStraightDistance(-3000, -0.8);
-        robot.FoundationServo.setPosition(1);
-        sleep(1000);
-        Strafe(5000, 0.3);
+        robot.FoundationServoLeft.setPosition(0.5);
+        robot.FoundationServoRight.setPosition(-0.5);
+        Strafe(1600, 0.5);
+        Turn(10, 0.5);
+        DriveStraightDistance(2600, 0.7);
+        robot.FoundationServoLeft.setPosition(-0.4);
+        robot.FoundationServoRight.setPosition(0.5);
+        sleep(500);
+        DriveStraightDistanceSpecial(-6750, -0.4);
+        robot.FoundationServoLeft.setPosition(0.5);
+        robot.FoundationServoRight.setPosition(-0.5);
+        DriveStraightDistance(-2500, -0.7);
     }
 
     private void DriveStraight(double power){
@@ -50,6 +55,21 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
             robot.FrontLeft.setPower(power);
             robot.RearRight.setPower(-power);
             robot.RearLeft.setPower(power);
+        //}
+    }
+
+    private void DriveStraightSpecial(double power){
+        /*if(strafeCancel){
+            robot.FrontRight.setPower(power - 0.2);
+            robot.FrontLeft.setPower(-power);
+            robot.RearRight.setPower(power);
+            robot.RearLeft.setPower(-power - 0.2);
+        }
+        else {*/
+        robot.FrontRight.setPower(-power/2);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power/2);
+        robot.RearLeft.setPower(power);
         //}
     }
 
@@ -75,7 +95,36 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
+        }
+
+        StopDriving();
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void DriveStraightDistanceSpecial(int distance, double power){
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.FrontRight.setTargetPosition(-distance/2);
+        robot.FrontLeft.setTargetPosition(distance);
+        robot.RearRight.setTargetPosition(-distance/2);
+        robot.RearLeft.setTargetPosition(distance);
+
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        DriveStraightSpecial(power);
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -104,7 +153,7 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -124,9 +173,9 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.FrontRight.setTargetPosition(-distance);
+        robot.FrontRight.setTargetPosition(distance);
         robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(distance);
+        robot.RearRight.setTargetPosition(-distance);
         robot.RearLeft.setTargetPosition(-distance);
 
         robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -135,11 +184,11 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         robot.FrontRight.setPower(power);
-        robot.FrontLeft.setPower(-power);
-        robot.RearRight.setPower(power);
-        robot.RearLeft.setPower(power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(-power);
 
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 

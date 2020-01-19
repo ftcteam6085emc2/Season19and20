@@ -46,10 +46,10 @@ public class TouchdownJesusV1 extends OpMode {
         double rightx1 = gamepad1.right_stick_x;
 
         if(gamepad2.start){
-            robot.FoundationServo.setPosition(0.5);
+            robot.FoundationServoLeft.setPosition(0.5);
         }
         if(gamepad2.back){
-            robot.FoundationServo.setPosition(1);
+            robot.FoundationServoLeft.setPosition(1);
         }
         if(gamepad2.dpad_down){
             SpinCheck = !SpinCheck;
@@ -105,12 +105,42 @@ public class TouchdownJesusV1 extends OpMode {
             robot.FrontRight.setPower(right1+rightx1);
             robot.RearRight.setPower(right1-rightx1);
         }
-        else {
+        else if(!(gamepad1.dpad_up || gamepad1.dpad_right || gamepad1.dpad_left || gamepad1.dpad_down)){
             robot.FrontLeft.setPower(left1);
             robot.RearLeft.setPower(left1);
 
             robot.FrontRight.setPower(right1);
             robot.RearRight.setPower(right1);
+        }
+        else {
+            if(gamepad1.dpad_up){
+                robot.FrontLeft.setPower(1);
+                robot.RearLeft.setPower(1);
+
+                robot.FrontRight.setPower(-1);
+                robot.RearRight.setPower(-1);
+            }
+            if(gamepad1.dpad_down){
+                robot.FrontLeft.setPower(-1);
+                robot.RearLeft.setPower(-1);
+
+                robot.FrontRight.setPower(1);
+                robot.RearRight.setPower(1);
+            }
+            if(gamepad1.dpad_left){
+                robot.FrontLeft.setPower(-0.7);
+                robot.RearLeft.setPower(0.7);
+
+                robot.FrontRight.setPower(-0.7);
+                robot.RearRight.setPower(0.7);
+            }
+            if(gamepad1.dpad_right){
+                robot.FrontLeft.setPower(0.7);
+                robot.RearLeft.setPower(-0.7);
+
+                robot.FrontRight.setPower(0.7);
+                robot.RearRight.setPower(-0.7);
+            }
         }
             /*if (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0) {
                 robot.FrontLeft.setPower((left1 + leftx1)*Multiplier);

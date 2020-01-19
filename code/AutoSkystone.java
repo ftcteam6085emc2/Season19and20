@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.vuforia.Vuforia;
@@ -16,6 +17,7 @@ import com.vuforia.Vuforia;
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 @Autonomous(name = "AutoSkystone", group = "Autonomous")
 
 public class AutoSkystone extends LinearOpMode {
