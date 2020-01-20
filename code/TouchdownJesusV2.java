@@ -16,6 +16,7 @@ public class TouchdownJesusV2 extends OpMode {
     private int currentPos = 0;
     private double armPower = 0.3;
     private boolean SpinCheck = false;
+    private double servoPower = -0.2;
     HWMapTouchdown robot = new HWMapTouchdown();
     private MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -50,7 +51,7 @@ public class TouchdownJesusV2 extends OpMode {
             robot.FoundationServoRight.setPosition(-0.5);
         }
         if(gamepad2.back){
-            robot.FoundationServoLeft.setPosition(-0.4);
+            robot.FoundationServoLeft.setPosition(servoPower);
             robot.FoundationServoRight.setPosition(0.5);
         }
         if(gamepad2.left_stick_button){
@@ -123,10 +124,12 @@ public class TouchdownJesusV2 extends OpMode {
             Strafe(-100, -0.5);
         }
         if(gamepad1.dpad_up){
-            DriveStraightDistance(100, 0.5);
+            //DriveStraightDistance(100, 0.5);
+            servoPower+=0.1;
         }
         if(gamepad1.dpad_down){
-            DriveStraightDistance(-100, -0.5);
+            //DriveStraightDistance(-100, -0.5);
+            servoPower-=0.1;
         }
 
         if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
@@ -400,6 +403,7 @@ public class TouchdownJesusV2 extends OpMode {
         telemetry.addData("Rear Right Encoder Position", robot.RearRight.getCurrentPosition());
         telemetry.addData("Front Left Encoder Position", robot.FrontLeft.getCurrentPosition());
         telemetry.addData("Rear Left Encoder Position", robot.RearLeft.getCurrentPosition());
+        telemetry.addData("Servo Power", servoPower);
         telemetry.update();
     }
 }

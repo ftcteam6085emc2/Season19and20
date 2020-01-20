@@ -24,8 +24,8 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         robot.SpinRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.ArmLeft.setTargetPosition(0);
         robot.ArmRight.setTargetPosition(0);
-        robot.GrabLeft.setPosition(0.6);
-        robot.GrabRight.setPosition(0.6);
+        robot.GrabLeft.setPosition(0.18);
+        robot.GrabRight.setPosition(0.18);
 
         // 1 tile = 23.5 inches
         waitForStart();
@@ -35,8 +35,8 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
         Turn(1000, 0.8);
         DriveStraightDistance(1500, 0.8);
         sleep(100);
-        robot.GrabRight.setPosition(0.2);
-        robot.GrabLeft.setPosition(0.2);
+        robot.GrabRight.setPosition(-0.1);
+        robot.GrabLeft.setPosition(-0.1);
         sleep(100);
         DriveStraightDistance(-1500, 0.8);
         Turn(-1000, -0.8);
@@ -184,7 +184,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(0.25);
                 robot.ArmRight.setPower(-0.25);
-                while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
+                while (robot.ArmLeft.isBusy() && robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
                     telemetry.update();
@@ -204,7 +204,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(0.25);
                 robot.ArmRight.setPower(-0.25);
-                while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
+                while (robot.ArmLeft.isBusy() && robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
                     telemetry.update();
@@ -213,8 +213,8 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmRight.setPower(0);
             }
         }
-        robot.GrabRight.setPosition(0.6);
-        robot.GrabLeft.setPosition(0.6);
+        robot.GrabRight.setPosition(0.18);
+        robot.GrabLeft.setPosition(0.18);
         robot.SpinRight.setPower(0);
         robot.SpinLeft.setPower(0);
         currentPos = 2;
@@ -233,7 +233,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(-0.25);
                 robot.ArmRight.setPower(0.25);
-                while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
+                while (robot.ArmLeft.isBusy() && robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
                     telemetry.update();
@@ -241,8 +241,8 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmLeft.setPower(0);
                 robot.ArmRight.setPower(0);
                 sleep(100);
-                robot.GrabRight.setPosition(0.2);
-                robot.GrabLeft.setPosition(0.2);
+                robot.GrabRight.setPosition(-0.1);
+                robot.GrabLeft.setPosition(-0.1);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -255,7 +255,7 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.ArmLeft.setPower(-0.25);
                 robot.ArmRight.setPower(0.25);
-                while (robot.ArmLeft.isBusy() || robot.ArmRight.isBusy()) {
+                while (robot.ArmLeft.isBusy() && robot.ArmRight.isBusy()) {
                     telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
                     telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
                     telemetry.update();
@@ -264,8 +264,8 @@ public class AutoTouchdownSkystonesBlue extends LinearOpMode {
                 robot.ArmRight.setPower(0);
             }
         }
-        robot.GrabRight.setPosition(0.6);
-        robot.GrabLeft.setPosition(0.6);
+        robot.GrabRight.setPosition(0.18);
+        robot.GrabLeft.setPosition(0.18);
         currentPos = 0;
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

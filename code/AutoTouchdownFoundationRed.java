@@ -40,7 +40,7 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         DriveStraightDistanceSpecial(-6750, -0.4);
         robot.FoundationServoLeft.setPosition(0.5);
         robot.FoundationServoRight.setPosition(-0.5);
-        DriveStraightDistance(-2500, -0.7);
+        DriveStraightDistance(-2000, -0.7);
     }
 
     private void DriveStraight(double power){

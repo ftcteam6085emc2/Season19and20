@@ -47,11 +47,11 @@ public class TouchdownJesusInversedOnBot extends OpMode {
         double rightx1 = -gamepad1.right_stick_x;
 
         if(gamepad1.start) {
-            robot.FoundationServo.setPosition(-0.5);
+            robot.FoundationServoLeft.setPosition(-0.5);
             robot.FoundationServoRight.setPosition(0.5);
         }
         if(gamepad1.back){
-            robot.FoundationServo.setPosition(0.5);
+            robot.FoundationServoLeft.setPosition(0.5);
             robot.FoundationServoRight.setPosition(-0.5);
         }
         if(gamepad2.dpad_down){
