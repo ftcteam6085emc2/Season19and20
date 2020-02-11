@@ -4,6 +4,7 @@ import android.media.AudioManager;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import android.media.MediaPlayer;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.io.IOException;
 
+@Disabled
 @TeleOp(name="TouchdownJesusInversedOnBot", group="Test")
 public class TouchdownJesusInversedOnBot extends OpMode {
 

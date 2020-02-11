@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.internal.vuforia.externalprovider.VuforiaWebcam;
 
 //This is NOT an OpMode
 
@@ -22,6 +27,12 @@ public class HWMapTouchdown {
     public Servo GrabRight = null;
     public Servo FoundationServoLeft = null;
     public Servo FoundationServoRight = null;
+
+    public WebcamName Webcam1 = null;
+
+    public RevBlinkinLedDriver RaveShadowLegends = null;
+
+    public TouchSensor touchSensor = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -51,6 +62,12 @@ public class HWMapTouchdown {
         GrabRight = hwMap.get(Servo.class, "GrabRight");
         FoundationServoLeft = hwMap.get(Servo.class, "FoundationServoLeft");
         FoundationServoRight = hwMap.get(Servo.class, "FoundationServoRight");
+
+        Webcam1 = hwMap.get(WebcamName.class, "Webcam 1");
+
+        RaveShadowLegends = hwMap.get(RevBlinkinLedDriver.class, "RaveShadowLegends");
+
+        touchSensor = hwMap.get(TouchSensor.class, "touchSensor");
 
         FrontLeft.setPower(0);
         FrontRight.setPower(0);

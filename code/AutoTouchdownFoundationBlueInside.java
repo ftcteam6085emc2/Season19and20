@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-@Disabled
-@Autonomous(name = "AutoTouchdownNapoleonBlue", group = "Autonomous")
 
-public class AutoTouchdownNapoleonBlue extends LinearOpMode {
+@Autonomous(name = "AutoTouchdownFoundationBlueInside", group = "Autonomous")
+public class AutoTouchdownFoundationBlueInside extends LinearOpMode {
 
     private boolean strafeCancel = false;
     private int currentPos = 0;
@@ -15,80 +13,58 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
 
     public void runOpMode() {
         robot.init(hardwareMap);
-        robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.ArmLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.ArmRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.SpinLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        robot.SpinRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.ArmLeft.setTargetPosition(0);
         robot.ArmRight.setTargetPosition(0);
-        robot.GrabLeft.setPosition(0.6);
-        robot.GrabRight.setPosition(0.6);
+        robot.GrabRight.setPosition(0.1);
+        robot.GrabLeft.setPosition(0.18);
 
         // 1 tile = 23.5 inches
         waitForStart();
-        robot.SpinRight.setPower(1.0);
-        robot.SpinLeft.setPower(-1.0);
-        DriveStraightDistance(3000, 0.8); //46 inches
-        sleep(1000);
-        Turn(1000, 0.8);
-        DriveStraightDistance(1680, 0.8);
-        robot.GrabRight.setPosition(0.2);
-        robot.GrabLeft.setPosition(0.2);
-        DriveStraightDistance(-1680, 0.8);
-        Turn(-1000, -0.8);
-        DriveStraightDistance(-1680, -0.8); //12 inches
-        sleep(1000);
-        Turn(1600, 0.5);
-        sleep(1000);
-        DriveStraightDistance(-7000, -0.8); //3.5 tiles
-        sleep(1000);
-        Turn(1600, 0.5);
-        DriveStraightDistance(1680, 0.8);
-        robot.FoundationServoLeft.setPosition(0.4);
-        sleep(1000);
-        DriveStraightDistance(-2900, -0.4);
-        robot.FoundationServoLeft.setPosition(1);
-        sleep(1000);
-        Strafe(-2625, -0.5);
-        Turn(-800, -0.5);
-        Flip();
-        RevFlip();
-        sleep(1000);
-        Turn(-800, 0.5);
-        DriveStraightDistance(-2600, -0.8); //1 rotation less than 3.5 tiles
-        /*sleep(1000);
-        Turn(1500, 0.5);
-        sleep(1000);
-        robot.SpinLeft.setPower(1.0);
-        robot.SpinRight.setPower(-1.0);
-        sleep(1000);
-        DriveStraightDistance(1120, 0.8); //12 inches
-        sleep(1000);
-        DriveStraightDistance(-1120, -0.8); //12 inches
-        sleep(1000);
-        Turn(-1500, -0.5);
-        sleep(1000);
-        DriveStraightDistance(-3290, -0.8);
-        strafeCancel = true;*/
+        robot.FoundationServoLeft.setPosition(0.5);
+        robot.FoundationServoRight.setPosition(-0.5);
+        Strafe(1600, 0.5);
+        DriveStraight(-0.5);
+        sleep(500);
+        DriveStraight(0);
+        DriveStraightDistance(2800, 0.7);
+        robot.FoundationServoLeft.setPosition(0.1);
+        robot.FoundationServoRight.setPosition(0.5);
+        sleep(500);
+        DriveStraightDistanceSpecial(-6800, -0.4);
+        robot.FoundationServoLeft.setPosition(0.5);
+        robot.FoundationServoRight.setPosition(-0.5);
+        Strafe(-2500, -0.8);
+        DriveStraightDistance(-2100, -0.7);
     }
 
     private void DriveStraight(double power){
-        if(strafeCancel){
+        /*if(strafeCancel){
             robot.FrontRight.setPower(power - 0.2);
             robot.FrontLeft.setPower(-power);
             robot.RearRight.setPower(power);
             robot.RearLeft.setPower(-power - 0.2);
         }
-        else {
-            robot.FrontRight.setPower(-power);
-            robot.FrontLeft.setPower(power);
-            robot.RearRight.setPower(-power);
-            robot.RearLeft.setPower(power);
+        else {*/
+        robot.FrontRight.setPower(-power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(power);
+        //}
+    }
+
+    private void DriveStraightSpecial(double power){
+        /*if(strafeCancel){
+            robot.FrontRight.setPower(power - 0.2);
+            robot.FrontLeft.setPower(-power);
+            robot.RearRight.setPower(power);
+            robot.RearLeft.setPower(-power - 0.2);
         }
+        else {*/
+        robot.FrontRight.setPower(-power/3);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power/3);
+        robot.RearLeft.setPower(power);
+        //}
     }
 
     private void StopDriving (){
@@ -113,7 +89,36 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
+        }
+
+        StopDriving();
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void DriveStraightDistanceSpecial(int distance, double power){
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.FrontRight.setTargetPosition(-distance/3);
+        robot.FrontLeft.setTargetPosition(distance);
+        robot.RearRight.setTargetPosition(-distance/3);
+        robot.RearLeft.setTargetPosition(distance);
+
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        DriveStraightSpecial(power);
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -142,7 +147,7 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -153,6 +158,7 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    //left is negative, right is positive
     private void Strafe (int distance, double power){
         strafeCancel = true;
         telemetry.addData("Driving", "Yes");
@@ -176,7 +182,7 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         robot.RearRight.setPower(-power);
         robot.RearLeft.setPower(-power);
 
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
             idle();
         }
 
@@ -188,45 +194,13 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         strafeCancel = false;
     }
 
-    //left is negative, right is positive
-    /*private void Strafe (int distance, double power){
-        strafeCancel = true;
-        telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(-distance);
-        robot.RearRight.setTargetPosition(distance);
-        robot.RearLeft.setTargetPosition(distance);
-
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        DriveStraight(power);
-        while((robot.FrontRight.isBusy() || robot.RearLeft.isBusy() || robot.RearRight.isBusy() || robot.FrontLeft.isBusy()) && opModeIsActive()){
-            idle();
-        }
-
-        StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        strafeCancel = false;
-    }*/
-
     //NeveRest 40 Gearmotor has 280 ppr (Wheels) 1120 for full rotation
     //NeveRest 20 Gearmotor has 140 ppr (Arm) 560 for full rotation
     private void Flip (){
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if(currentPos == 0) {
-            for (int i = 200; i <= 800; i += 200) {
+            for (int i = 225; i <= 1100; i += 225) {
                 robot.ArmLeft.setTargetPosition(i);
                 robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -240,7 +214,6 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
                 }
                 robot.ArmLeft.setPower(0);
                 robot.ArmRight.setPower(0);
-                sleep(100);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -275,7 +248,7 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if(currentPos == 2) {
-            for (int i = -225; i >= -900; i -= 225) {
+            for (int i = -225; i >= -1100; i -= 225) {
                 robot.ArmLeft.setTargetPosition(i);
                 robot.ArmRight.setTargetPosition(-i);
                 robot.ArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -289,8 +262,7 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
                 }
                 robot.ArmLeft.setPower(0);
                 robot.ArmRight.setPower(0);
-                sleep(100);
-                if (i == -450) {
+                if (i == -550) {
                     robot.GrabRight.setPosition(0.2);
                     robot.GrabLeft.setPosition(0.2);
                 }
@@ -321,7 +293,7 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    /*private void Center (){
+    private void Center (){
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         if(currentPos == 0) {
@@ -367,5 +339,5 @@ public class AutoTouchdownNapoleonBlue extends LinearOpMode {
         currentPos = 1;
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }*/
+    }
 }

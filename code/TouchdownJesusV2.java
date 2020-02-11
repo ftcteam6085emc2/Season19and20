@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Season19and20.code;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,6 +18,10 @@ public class TouchdownJesusV2 extends OpMode {
     private double armPower = 0.3;
     private boolean SpinCheck = false;
     private double servoPower = -0.2;
+    private boolean servoSlow = false;
+    private boolean touchStop = false;
+    private boolean released = true;
+    private RevBlinkinLedDriver.BlinkinPattern LEDColor = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
     HWMapTouchdown robot = new HWMapTouchdown();
     private MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -41,37 +46,43 @@ public class TouchdownJesusV2 extends OpMode {
     @Override
     public void loop() {
         Telemetry();
-        double left1 = -gamepad1.left_stick_y; //these are reversed for kevin I guess
-        double right1 = gamepad1.right_stick_y;
-        double leftx1 = -gamepad1.left_stick_x;
-        double rightx1 = -gamepad1.right_stick_x;
+        double left1;
+        double right1;
+        double leftx1;
+        double rightx1;
+        if(!servoSlow) {
+            left1 = -gamepad1.left_stick_y; //these are reversed for kevin I guess
+            right1 = gamepad1.right_stick_y;
+            leftx1 = -gamepad1.left_stick_x;
+            rightx1 = -gamepad1.right_stick_x;
+        }
+        else{
+            left1 = -gamepad1.left_stick_y-0.1; //these are reversed for kevin I guess
+            right1 = gamepad1.right_stick_y-0.1;
+            leftx1 = -gamepad1.left_stick_x-0.1;
+            rightx1 = -gamepad1.right_stick_x-0.1;
+        }
 
-        if(gamepad2.start){
+        if(gamepad2.start || gamepad1.start){
             robot.FoundationServoLeft.setPosition(0.5);
             robot.FoundationServoRight.setPosition(-0.5);
+            servoSlow = false;
         }
-        if(gamepad2.back){
-            robot.FoundationServoLeft.setPosition(servoPower);
+        if(gamepad2.back || gamepad1.back){
+            robot.FoundationServoLeft.setPosition(0.1);
             robot.FoundationServoRight.setPosition(0.5);
+            servoSlow = true;
         }
-        if(gamepad2.left_stick_button){
+        if(gamepad2.left_stick_button || gamepad1.left_stick_button){
             robot.FoundationServoLeft.setPosition(1);
             robot.FoundationServoRight.setPosition(1);
         }
-        if(gamepad2.dpad_down){
+        if(gamepad2.dpad_down && released){
             SpinCheck = !SpinCheck;
+            released = false;
         }
-        if(gamepad1.start){
-            robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-        if(gamepad1.start){
-            robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        else if (!gamepad2.dpad_down){
+            released = true;
         }
         if(gamepad2.x) {
             robot.SpinRight.setPower(-1);
@@ -85,10 +96,23 @@ public class TouchdownJesusV2 extends OpMode {
             robot.SpinRight.setPower(0);
             robot.SpinLeft.setPower(0);
         }
-
+        if(robot.touchSensor.isPressed() && touchStop == false){
+            robot.SpinRight.setPower(0);
+            robot.SpinLeft.setPower(0);
+            touchStop = true;
+            LEDColor = RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN;
+            robot.RaveShadowLegends.setPattern(LEDColor);
+        }
+        if(!robot.touchSensor.isPressed()){
+            touchStop = false;
+            if(LEDColor == RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN) {
+                LEDColor = RevBlinkinLedDriver.BlinkinPattern.RED;
+            }
+            robot.RaveShadowLegends.setPattern(LEDColor);
+        }
         if(gamepad2.left_bumper){
-            robot.GrabRight.setPosition(0.18);
-            robot.GrabLeft.setPosition(0.18);
+            robot.GrabRight.setPosition(0.1);
+            robot.GrabLeft.setPosition(0.2);
         }
         if(gamepad2.right_bumper){
             robot.GrabRight.setPosition(-0.1);
@@ -107,16 +131,22 @@ public class TouchdownJesusV2 extends OpMode {
             robot.ArmRight.setPower(0);
             robot.ArmLeft.setPower(0);
         }
-        if(gamepad2.dpad_left){
-            RevFlip();
+        if(gamepad2.left_trigger > 0){
+            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD);
         }
-        if(gamepad2.dpad_right){
-            Flip();
+        else {
+            robot.RaveShadowLegends.setPattern(LEDColor);
         }
-        if(gamepad2.dpad_up){
-            Center();
+        if(gamepad2.right_trigger > 0){
+            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_BLUE);
         }
-
+        else {
+            robot.RaveShadowLegends.setPattern(LEDColor);
+        }
+        if(gamepad2.dpad_down){
+            LEDColor = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
+            robot.RaveShadowLegends.setPattern(LEDColor);
+        }
         if(gamepad1.dpad_left){
             Strafe(100, 0.5);
         }
@@ -124,13 +154,12 @@ public class TouchdownJesusV2 extends OpMode {
             Strafe(-100, -0.5);
         }
         if(gamepad1.dpad_up){
-            //DriveStraightDistance(100, 0.5);
-            servoPower+=0.1;
+            DriveStraightDistance(100, 0.5);
         }
         if(gamepad1.dpad_down){
-            //DriveStraightDistance(-100, -0.5);
-            servoPower-=0.1;
+            DriveStraightDistance(-100, -0.5);
         }
+
 
         if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){
             robot.FrontLeft.setPower(left1+leftx1);
@@ -403,7 +432,8 @@ public class TouchdownJesusV2 extends OpMode {
         telemetry.addData("Rear Right Encoder Position", robot.RearRight.getCurrentPosition());
         telemetry.addData("Front Left Encoder Position", robot.FrontLeft.getCurrentPosition());
         telemetry.addData("Rear Left Encoder Position", robot.RearLeft.getCurrentPosition());
-        telemetry.addData("Servo Power", servoPower);
+        telemetry.addData("encoder-ArmLeft", robot.ArmLeft.getCurrentPosition() + "  busy=" + robot.ArmLeft.isBusy());
+        telemetry.addData("encoder-ArmRight", robot.ArmRight.getCurrentPosition() + "  busy=" + robot.ArmRight.isBusy());
         telemetry.update();
     }
 }

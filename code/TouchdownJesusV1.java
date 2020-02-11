@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Season19and20.code;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.io.IOException;
 
+@Disabled
 @TeleOp(name="TouchdownJesusV1", group="Test")
 public class TouchdownJesusV1 extends OpMode {
 

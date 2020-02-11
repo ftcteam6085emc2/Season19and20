@@ -14,18 +14,10 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
 
     public void runOpMode() {
         robot.init(hardwareMap);
-        robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.RearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.RearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.ArmLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.ArmRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.SpinLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        robot.SpinRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         robot.ArmLeft.setTargetPosition(0);
         robot.ArmRight.setTargetPosition(0);
-        robot.GrabLeft.setPosition(0.6);
-        robot.GrabRight.setPosition(0.6);
+        robot.GrabRight.setPosition(0.1);
+        robot.GrabLeft.setPosition(0.18);
 
         // 1 tile = 23.5 inches
         waitForStart();
@@ -34,10 +26,10 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         Strafe(-1600, -0.5);
         Turn(-200, -0.5);
         DriveStraightDistance(2600, 0.7);
-        robot.FoundationServoLeft.setPosition(-0.4);
+        robot.FoundationServoLeft.setPosition(0.1);
         robot.FoundationServoRight.setPosition(0.5);
         sleep(500);
-        DriveStraightDistanceSpecial(-6750, -0.4);
+        DriveStraightDistanceSpecial(-6250, -0.4);
         robot.FoundationServoLeft.setPosition(0.5);
         robot.FoundationServoRight.setPosition(-0.5);
         DriveStraightDistance(-2000, -0.7);
@@ -66,9 +58,9 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         }
         else {*/
         robot.FrontRight.setPower(-power);
-        robot.FrontLeft.setPower(power/2);
+        robot.FrontLeft.setPower(power/3);
         robot.RearRight.setPower(-power);
-        robot.RearLeft.setPower(power/2);
+        robot.RearLeft.setPower(power/3);
         //}
     }
 
@@ -113,9 +105,9 @@ public class AutoTouchdownFoundationRed extends LinearOpMode {
         robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(distance/2);
+        robot.FrontLeft.setTargetPosition(distance/3);
         robot.RearRight.setTargetPosition(-distance);
-        robot.RearLeft.setTargetPosition(distance/2);
+        robot.RearLeft.setTargetPosition(distance/3);
 
         robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
