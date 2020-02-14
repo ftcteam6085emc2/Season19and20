@@ -137,28 +137,6 @@ public class TouchdownJesusV2 extends OpMode {
         else {
             robot.RaveShadowLegends.setPattern(LEDColor);
         }
-        if(gamepad2.right_trigger > 0){
-            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_BLUE);
-        }
-        else {
-            robot.RaveShadowLegends.setPattern(LEDColor);
-        }
-        if(gamepad2.dpad_down){
-            LEDColor = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
-            robot.RaveShadowLegends.setPattern(LEDColor);
-        }
-        if(gamepad1.dpad_left){
-            Strafe(100, 0.5);
-        }
-        if(gamepad1.dpad_right){
-            Strafe(-100, -0.5);
-        }
-        if(gamepad1.dpad_up){
-            DriveStraightDistance(100, 0.5);
-        }
-        if(gamepad1.dpad_down){
-            DriveStraightDistance(-100, -0.5);
-        }
 
 
         if(gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0){

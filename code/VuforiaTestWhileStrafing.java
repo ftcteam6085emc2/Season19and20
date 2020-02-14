@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -84,8 +85,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@Autonomous(name = "SkystoneRed", group = "Concept")
-public class SkystoneRed extends LinearOpMode {
+@Autonomous(name = "VuforiaTestWhileStrafing", group = "Concept")
+public class VuforiaTestWhileStrafing extends LinearOpMode {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -139,16 +140,15 @@ public class SkystoneRed extends LinearOpMode {
     WebcamName webcamName = null;
 
     private boolean targetVisible = false;
-    private boolean scanned = false;
     private float phoneXRotate = 180;
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
     private int i = 0;
     private int y = 0;
     private boolean yea = false;
-    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
     HWMapTouchdown robot = new HWMapTouchdown();
+    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
     @Override
     public void runOpMode() {
@@ -161,6 +161,20 @@ public class SkystoneRed extends LinearOpMode {
         strafeCount = 0;
         robot.GrabRight.setPosition(0.1);
         robot.GrabLeft.setPosition(0.2);
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.FrontRight.setTargetPosition(0);
+        robot.FrontLeft.setTargetPosition(0);
+        robot.RearRight.setTargetPosition(0);
+        robot.RearLeft.setTargetPosition(0);
+
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         /*
          * Retrieve the camera we are to use.
          */
@@ -351,317 +365,23 @@ public class SkystoneRed extends LinearOpMode {
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
-
+        waitForStart();
         while (!isStopRequested()) {
-            if (scanned) {
-                while(targetVisible) {
-                    targetVisible = false;
-                    for (VuforiaTrackable trackable : allTrackables) {
-                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                            telemetry.addData("Visible Target", trackable.getName());
-                            targetVisible = true;
-
-                            // getUpdatedRobotLocation() will return null if no new information is available since
-                            // the last time that call was made, or if the trackable is not currently visible.
-                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                            if (robotLocationTransform != null) {
-                                lastLocation = robotLocationTransform;
-                            }
-                            break;
-                        }
-                    }
-                    yea = false;
-                    why = 0;
-                    VectorF translation = lastLocation.getTranslation();
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f", translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                    if (translation.get(1) / mmPerInch <= -3) {
-                        robot.FrontRight.setPower(0.3);
-                        robot.FrontLeft.setPower(0.3);
-                        robot.RearRight.setPower(-0.3);
-                        robot.RearLeft.setPower(-0.3);
-                    } else if (translation.get(1) / mmPerInch >= 3) {
-                        robot.FrontRight.setPower(-0.3);
-                        robot.FrontLeft.setPower(-0.3);
-                        robot.RearRight.setPower(0.3);
-                        robot.RearLeft.setPower(0.3);
-                    } else if (translation.get(0) / mmPerInch <= -1) {
-                        robot.FrontRight.setPower(-0.3);
-                        robot.FrontLeft.setPower(0.3);
-                        robot.RearRight.setPower(-0.3);
-                        robot.RearLeft.setPower(0.3);
-                        why = 1;
-                    }
-                }
-                if (why == 1) {
-                    DriveStraight(0.3);
-                    sleep(50);
-                    StopDriving();
-                    while (robot.touchSensor.isPressed() == false) {
-                        robot.FrontLeft.setPower(0.5);
-                        robot.RearLeft.setPower(0.5);
-                        robot.SpinRight.setPower(1.0);
-                        robot.SpinLeft.setPower(-1.0);
-                        sleep(10);
-                    }
-                    robot.FrontLeft.setPower(0);
-                    robot.RearLeft.setPower(0);
-                    robot.SpinRight.setPower(0);
-                    robot.SpinLeft.setPower(0);
-                    if (robot.touchSensor.isPressed()) {
-                        robot.GrabRight.setPosition(-0.1);
-                        robot.GrabLeft.setPosition(-0.1);
-                        Strafe(-2500, -0.5);
-                        if(strafeCount == 2 || strafeCount == 3){
-                            DriveStraightDistance(4000, 0.8);
-                        }
-                        else if (strafeCount >= 4 && strafeCount <= 6){
-                            DriveStraightDistance(5000, 0.8);
-                        }
-                        else if (strafeCount < 2){
-                            DriveStraightDistance(3500, 0.8);
-                        }
-                        else{
-                            DriveStraightDistance(6000, 0.8);
-                        }
-                        robot.SpinRight.setPower(-1.0);
-                        robot.SpinLeft.setPower(1.0);
-                        DriveStraightDistance(-1000, -0.8);
-                        robot.SpinRight.setPower(0);
-                        robot.SpinLeft.setPower(0);
-
-
-
-                        if(strafeCount == 2 || strafeCount == 3){
-                            DriveStraightDistance(-6000, -0.8);
-                        }
-                        else if (strafeCount >= 4 && strafeCount <= 6){
-                            DriveStraightDistance(-6000, -0.8);
-                        }
-                        else if (strafeCount < 2){
-                            DriveStraightDistance(-5000, -0.8);
-                        }
-                        else{
-                            DriveStraightDistance(-2000, -0.8);
-                        }
-                        Turn(-1500, -0.8);
-                        DriveStraight(-0.8);
-                        sleep(2000);
-                        StopDriving();
-                        DriveStraightDistance(4000, 0.5);
-                        if(strafeCount >= 4 && strafeCount <= 6){
-                            while (robot.touchSensor.isPressed() == false) {
-                                robot.FrontRight.setPower(-0.5);
-                                robot.RearRight.setPower(-0.5);
-                                robot.SpinRight.setPower(1.0);
-                                robot.SpinLeft.setPower(-1.0);
-                            }
-                            robot.SpinRight.setPower(0);
-                            robot.SpinLeft.setPower(0);
-                        }
-                        else {
-                            while (robot.touchSensor.isPressed() == false) {
-                                robot.FrontLeft.setPower(0.5);
-                                robot.RearLeft.setPower(0.5);
-                                robot.SpinRight.setPower(1.0);
-                                robot.SpinLeft.setPower(-1.0);
-                            }
-                            robot.SpinRight.setPower(0);
-                            robot.SpinLeft.setPower(0);
-                        }
-                        if(strafeCount >= 4 && strafeCount <= 6){
-                            Strafe(2500, 0.5);
-                            DriveStraightDistance(-5000, -0.8);
-                            Turn(1500, 0.8);
-                        }
-                        else {
-                            Strafe(-2500, -0.5);
-                            DriveStraightDistance(6000, 0.8);
-                        }
-                        robot.SpinRight.setPower(-1.0);
-                        robot.SpinLeft.setPower(1.0);
-                        sleep(500);
-                        robot.SpinRight.setPower(0);
-                        robot.SpinLeft.setPower(0);
-                        break;
-                    }
-                }
-            } else {
-                telemetry.addData("Visible Target", "none");
-                if (!init) {
-                    robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    robot.FrontRight.setTargetPosition(0);
-                    robot.FrontLeft.setTargetPosition(0);
-                    robot.RearRight.setTargetPosition(0);
-                    robot.RearLeft.setTargetPosition(0);
-                    robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    while(!targetVisible){
-                        SpecialTurn(100, 0.8);
-                        SpecialStrafe(700, 0.6);
-                        strafeCount++;
-                    }
-                    scanned = true;
-                    StopDriving();
-                    robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                }
-                if (!yea) {
-                    robot.FrontRight.setPower(0);
-                    robot.FrontLeft.setPower(0);
-                    robot.RearRight.setPower(0);
-                    robot.RearLeft.setPower(0);
-                }
+            Strafe(800, 0.2);
+            y++;
+            if(targetVisible){
+                telemetry.addData("Repeats: ", y);
+                telemetry.update();
+                sleep(5000);
+                break;
             }
-            if (init == true) {
-                robot.FrontLeft.setPower(0);
-                robot.RearLeft.setPower(0);
-                robot.SpinRight.setPower(0);
-                robot.SpinLeft.setPower(0);
-                init = false;
-                waitForStart();
-                DriveStraightDistance(1200, 0.8);
-            }
-            telemetry.update();
         }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
     }
 
-    private void DriveStraight(double power) {
-        /*if(strafeCancel){
-            robot.FrontRight.setPower(power - 0.2);
-            robot.FrontLeft.setPower(-power);
-            robot.RearRight.setPower(power);
-            robot.RearLeft.setPower(-power - 0.2);
-        }
-        else {*/
-        robot.FrontRight.setPower(-power);
-        robot.FrontLeft.setPower(power);
-        robot.RearRight.setPower(-power);
-        robot.RearLeft.setPower(power);
-        //}
-    }
-
-    private void StopDriving() {
-        DriveStraight(0);
-    }
-
-    private void DriveStraightDistance(int distance, double power) {
-        telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(-distance);
-        robot.RearLeft.setTargetPosition(distance);
-
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        DriveStraight(power);
-        while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()) {
-            idle();
-        }
-
-        StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    private void Turn(int distance, double power) {
-        telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.FrontRight.setTargetPosition(distance);
-        robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(distance);
-        robot.RearLeft.setTargetPosition(distance);
-
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        DriveStraight(power);
-        while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()) {
-            idle();
-        }
-
-        StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    private void SpecialTurn(int distance, double power) {
-        telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setTargetPosition(robot.FrontRight.getCurrentPosition() + distance);
-        robot.FrontLeft.setTargetPosition(robot.FrontLeft.getCurrentPosition() + distance);
-        robot.RearRight.setTargetPosition(robot.RearRight.getCurrentPosition() + distance);
-        robot.RearLeft.setTargetPosition(robot.RearLeft.getCurrentPosition() + distance);
-
-        DriveStraight(power);
-        while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()) {
-            idle();
-        }
-        StopDriving();
-    }
-
     private void Strafe (int distance, double power){
-        telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.FrontRight.setTargetPosition(distance);
-        robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(-distance);
-        robot.RearLeft.setTargetPosition(-distance);
-
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        robot.FrontRight.setPower(power);
-        robot.FrontLeft.setPower(power);
-        robot.RearRight.setPower(-power);
-        robot.RearLeft.setPower(-power);
-
-        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
-            idle();
-        }
-
-        StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    private void SpecialStrafe (int distance, double power){
         telemetry.addData("Driving", "Yes");
         robot.FrontRight.setTargetPosition(robot.FrontRight.getCurrentPosition() + distance);
         robot.FrontLeft.setTargetPosition(robot.FrontLeft.getCurrentPosition() + distance);
