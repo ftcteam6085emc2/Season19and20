@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -143,8 +144,7 @@ public class SkystoneRed extends LinearOpMode {
     private float phoneXRotate = 180;
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
-    private int i = 0;
-    private int y = 0;
+    private int turnCount = 0;
     private boolean yea = false;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
@@ -153,8 +153,7 @@ public class SkystoneRed extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-        y = 0;
-        i = 0;
+        turnCount = 0;
         init = true;
         targetVisible = false;
         why = 0;
@@ -374,8 +373,19 @@ public class SkystoneRed extends LinearOpMode {
                     why = 0;
                     VectorF translation = lastLocation.getTranslation();
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f", translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
-                    if (translation.get(1) / mmPerInch <= -3) {
+                    int turnAmount = (int)(rotation.thirdAngle*(25/3));
+                    if (rotation.thirdAngle > 5){
+                        Turn(turnAmount+100, 0.8); //turn right
+                        Strafe(100, 0.8); //strafe left
+                    }
+                    else if (rotation.thirdAngle < -5){
+                        Turn(turnAmount-50, -0.8); //turn left
+                        Strafe(-100, -0.8); //strafe right
+                    }
+                    else if (translation.get(1) / mmPerInch <= -3) {
                         robot.FrontRight.setPower(0.3);
                         robot.FrontLeft.setPower(0.3);
                         robot.RearRight.setPower(-0.3);
@@ -391,6 +401,9 @@ public class SkystoneRed extends LinearOpMode {
                         robot.RearRight.setPower(-0.3);
                         robot.RearLeft.setPower(0.3);
                         why = 1;
+                    } else if (translation.get(0) / mmPerInch > -1) {
+                        why = 1;
+                        targetVisible = false;
                     }
                 }
                 if (why == 1) {
@@ -402,8 +415,13 @@ public class SkystoneRed extends LinearOpMode {
                         robot.RearLeft.setPower(0.5);
                         robot.SpinRight.setPower(1.0);
                         robot.SpinLeft.setPower(-1.0);
+                        turnCount++;
                         sleep(10);
                     }
+                    robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
+                    telemetry.addData("turnCount: ", turnCount);
+                    telemetry.update();
+                    sleep(5000);
                     robot.FrontLeft.setPower(0);
                     robot.RearLeft.setPower(0);
                     robot.SpinRight.setPower(0);
@@ -424,63 +442,75 @@ public class SkystoneRed extends LinearOpMode {
                         else{
                             DriveStraightDistance(6000, 0.8);
                         }
+                        robot.GrabRight.setPosition(0.1);
+                        robot.GrabLeft.setPosition(0.2);
                         robot.SpinRight.setPower(-1.0);
                         robot.SpinLeft.setPower(1.0);
                         DriveStraightDistance(-1000, -0.8);
+                        if(!robot.touchSensor.isPressed()){
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        }
                         robot.SpinRight.setPower(0);
                         robot.SpinLeft.setPower(0);
 
 
 
                         if(strafeCount == 2 || strafeCount == 3){
-                            DriveStraightDistance(-6000, -0.8);
+                            DriveStraightDistance(-9000, -0.8);
                         }
                         else if (strafeCount >= 4 && strafeCount <= 6){
-                            DriveStraightDistance(-6000, -0.8);
+                            DriveStraightDistance(-9000, -0.8);
                         }
                         else if (strafeCount < 2){
-                            DriveStraightDistance(-5000, -0.8);
+                            DriveStraightDistance(-6000, -0.8);
                         }
                         else{
-                            DriveStraightDistance(-2000, -0.8);
+                            DriveStraightDistance(-3000, -0.8);
                         }
                         Turn(-1500, -0.8);
                         DriveStraight(-0.8);
-                        sleep(2000);
+                        sleep(1500);
                         StopDriving();
-                        DriveStraightDistance(4000, 0.5);
+                        DriveStraightDistance(3000, 0.5);
                         if(strafeCount >= 4 && strafeCount <= 6){
-                            while (robot.touchSensor.isPressed() == false) {
+                            while (!robot.touchSensor.isPressed()) {
                                 robot.FrontRight.setPower(-0.5);
                                 robot.RearRight.setPower(-0.5);
                                 robot.SpinRight.setPower(1.0);
                                 robot.SpinLeft.setPower(-1.0);
                             }
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                             robot.SpinRight.setPower(0);
                             robot.SpinLeft.setPower(0);
                         }
                         else {
-                            while (robot.touchSensor.isPressed() == false) {
+                            while (!robot.touchSensor.isPressed()) {
                                 robot.FrontLeft.setPower(0.5);
                                 robot.RearLeft.setPower(0.5);
                                 robot.SpinRight.setPower(1.0);
                                 robot.SpinLeft.setPower(-1.0);
                             }
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                             robot.SpinRight.setPower(0);
                             robot.SpinLeft.setPower(0);
                         }
                         if(strafeCount >= 4 && strafeCount <= 6){
-                            Strafe(2500, 0.5);
+                            Turn(-200, -0.8);
+                            Strafe(4000, 0.5);
                             DriveStraightDistance(-5000, -0.8);
                             Turn(1500, 0.8);
                         }
                         else {
-                            Strafe(-2500, -0.5);
-                            DriveStraightDistance(6000, 0.8);
+                            Turn(200, 0.8);
+                            Strafe(-4000, -0.5);
+                            DriveStraightDistance(8000, 0.8);
                         }
                         robot.SpinRight.setPower(-1.0);
                         robot.SpinLeft.setPower(1.0);
-                        sleep(500);
+                        DriveStraightDistance(-2000, -0.8);
+                        if(!robot.touchSensor.isPressed()){
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        }
                         robot.SpinRight.setPower(0);
                         robot.SpinLeft.setPower(0);
                         break;
@@ -502,8 +532,8 @@ public class SkystoneRed extends LinearOpMode {
                     robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     while(!targetVisible){
-                        SpecialTurn(100, 0.8);
                         SpecialStrafe(700, 0.6);
+                        SpecialTurn(160, 0.8);
                         strafeCount++;
                     }
                     scanned = true;
@@ -622,8 +652,26 @@ public class SkystoneRed extends LinearOpMode {
         robot.RearLeft.setTargetPosition(robot.RearLeft.getCurrentPosition() + distance);
 
         DriveStraight(power);
-        while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()) {
-            idle();
+        while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive() && !targetVisible) {
+            targetVisible = false;
+            for (VuforiaTrackable trackable : allTrackables) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    telemetry.addData("Visible Target", trackable.getName());
+                    targetVisible = true;
+                    robot.FrontRight.setPower(0);
+                    robot.FrontLeft.setPower(0);
+                    robot.RearRight.setPower(0);
+                    robot.RearLeft.setPower(0);
+
+                    // getUpdatedRobotLocation() will return null if no new information is available since
+                    // the last time that call was made, or if the trackable is not currently visible.
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    break;
+                }
+            }
         }
         StopDriving();
     }
@@ -673,26 +721,8 @@ public class SkystoneRed extends LinearOpMode {
         robot.RearRight.setPower(-power);
         robot.RearLeft.setPower(-power);
 
-        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive() && !targetVisible){
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
-                    robot.FrontRight.setPower(0);
-                    robot.FrontLeft.setPower(0);
-                    robot.RearRight.setPower(0);
-                    robot.RearLeft.setPower(0);
-
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    break;
-                }
-            }
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
         }
     }
 }
