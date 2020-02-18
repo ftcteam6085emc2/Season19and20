@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Season19and20.code;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -139,20 +140,20 @@ public class SkystoneBlue extends LinearOpMode {
     WebcamName webcamName = null;
 
     private boolean targetVisible = false;
+    private boolean scanned = false;
     private float phoneXRotate = 180;
     private float phoneYRotate = 0;
     private float phoneZRotate = 0;
-    private int i = 0;
-    private int y = 0;
+    private int turnCount = 0;
     private boolean yea = false;
+    List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
     HWMapTouchdown robot = new HWMapTouchdown();
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-        y = 0;
-        i = 0;
+        turnCount = 0;
         init = true;
         targetVisible = false;
         why = 0;
@@ -217,7 +218,6 @@ public class SkystoneBlue extends LinearOpMode {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
 
         /**
@@ -352,83 +352,187 @@ public class SkystoneBlue extends LinearOpMode {
         targetsSkyStone.activate();
 
         while (!isStopRequested()) {
-            // check all the trackable targets to see which one (if any) is visible.
-            targetVisible = false;
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
+            if (scanned) {
+                runUsingEncoder();
+                while(targetVisible) {
+                    targetVisible = false;
+                    for (VuforiaTrackable trackable : allTrackables) {
+                        if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                            telemetry.addData("Visible Target", trackable.getName());
+                            targetVisible = true;
 
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
+                            // getUpdatedRobotLocation() will return null if no new information is available since
+                            // the last time that call was made, or if the trackable is not currently visible.
+                            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                            if (robotLocationTransform != null) {
+                                lastLocation = robotLocationTransform;
+                            }
+                            break;
+                        }
                     }
-                    break;
-                }
-            }
+                    yea = false;
+                    why = 0;
+                    VectorF translation = lastLocation.getTranslation();
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f", translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
-            // Provide feedback as to where the robot is located (if we know).
-            if (targetVisible) {
-                yea = false;
-                why = 0;
-                // express position (translation) of robot in inches.
-                VectorF translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-                // express the rotation of the robot in degrees.
-                Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                if (translation.get(1) / mmPerInch <= -3) {
-                    robot.FrontRight.setPower(0.3);
-                    robot.FrontLeft.setPower(0.3);
-                    robot.RearRight.setPower(-0.3);
-                    robot.RearLeft.setPower(-0.3);
-                } else if (translation.get(1) / mmPerInch >= 3) {
-                    robot.FrontRight.setPower(-0.3);
-                    robot.FrontLeft.setPower(-0.3);
-                    robot.RearRight.setPower(0.3);
-                    robot.RearLeft.setPower(0.3);
-                } else if (translation.get(0) / mmPerInch <= -1) {
-                    robot.FrontRight.setPower(-0.3);
-                    robot.FrontLeft.setPower(0.3);
-                    robot.RearRight.setPower(-0.3);
-                    robot.RearLeft.setPower(0.3);
-                    why = 1;
+                    int turnAmount = (int)(rotation.thirdAngle*(50/3));
+                    if (rotation.thirdAngle > 5){
+                        Turn(turnAmount+100, 0.8); //turn right
+                        Strafe(100, 0.8); //strafe left
+                    }
+                    else if (rotation.thirdAngle < -5){
+                        Turn(turnAmount-50, -0.8); //turn left
+                        Strafe(-100, -0.8); //strafe right
+                    }
+                    else if (translation.get(1) / mmPerInch <= -3) {
+                        robot.FrontRight.setPower(0.3);
+                        robot.FrontLeft.setPower(0.3);
+                        robot.RearRight.setPower(-0.3);
+                        robot.RearLeft.setPower(-0.3);
+                    } else if (translation.get(1) / mmPerInch >= 3) {
+                        robot.FrontRight.setPower(-0.3);
+                        robot.FrontLeft.setPower(-0.3);
+                        robot.RearRight.setPower(0.3);
+                        robot.RearLeft.setPower(0.3);
+                    } else if (translation.get(0) / mmPerInch <= -1) {
+                        robot.FrontRight.setPower(-0.3);
+                        robot.FrontLeft.setPower(0.3);
+                        robot.RearRight.setPower(-0.3);
+                        robot.RearLeft.setPower(0.3);
+                        why = 1;
+                    } else if (translation.get(0) / mmPerInch > -1) {
+                        why = 1;
+                        targetVisible = false;
+                    }
                 }
-            } else {
-                telemetry.addData("Visible Target", "none");
-                if (y >= 200 && !init) {
-                    Turn(-100, 0.8);
-                    Strafe(-800, 0.6);
-                    strafeCount++;
-                    y = 0;
-                } else {
-                    y++;
-                }
-                if (!yea) {
-                    robot.FrontRight.setPower(0);
-                    robot.FrontLeft.setPower(0);
-                    robot.RearRight.setPower(0);
-                    robot.RearLeft.setPower(0);
-                }
-                if (why == 1 && init == false) {
-                    DriveStraight(0.5);
-                    sleep(500);
+                if (why == 1) {
+                    DriveStraight(0.3);
+                    sleep(50);
                     StopDriving();
-                    while (targetVisible == false && robot.touchSensor.isPressed() == false) {
+                    while (robot.touchSensor.isPressed() == false) {
                         robot.FrontLeft.setPower(0.5);
                         robot.RearLeft.setPower(0.5);
                         robot.SpinRight.setPower(1.0);
                         robot.SpinLeft.setPower(-1.0);
+                        turnCount++;
                         sleep(10);
                     }
+                    robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                     robot.FrontLeft.setPower(0);
                     robot.RearLeft.setPower(0);
                     robot.SpinRight.setPower(0);
                     robot.SpinLeft.setPower(0);
+                    runToPosition();
+                    if (robot.touchSensor.isPressed()) {
+                        robot.GrabRight.setPosition(-0.1);
+                        robot.GrabLeft.setPosition(-0.1);
+                        Strafe(-2500, -0.5);
+                        Turn(3000, 0.8);
+                        if(strafeCount == 2 || strafeCount == 3){
+                            DriveStraightDistance(4000, 0.8);
+                        }
+                        else if (strafeCount >= 4 && strafeCount <= 6){
+                            DriveStraightDistance(5000, 0.8);
+                        }
+                        else if (strafeCount < 2){
+                            DriveStraightDistance(3500, 0.8);
+                        }
+                        else{
+                            DriveStraightDistance(6000, 0.8);
+                        }
+                        robot.GrabRight.setPosition(0.1);
+                        robot.GrabLeft.setPosition(0.2);
+                        robot.SpinRight.setPower(-1.0);
+                        robot.SpinLeft.setPower(1.0);
+                        DriveStraightDistance(-1000, -0.8);
+                        if(!robot.touchSensor.isPressed()){
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        }
+                        robot.SpinRight.setPower(0);
+                        robot.SpinLeft.setPower(0);
+
+
+
+                        if(strafeCount == 2 || strafeCount == 3){
+                            DriveStraightDistance(-9000, -0.8);
+                        }
+                        else if (strafeCount >= 4 && strafeCount <= 6){
+                            DriveStraightDistance(-9000, -0.8);
+                        }
+                        else if (strafeCount < 2){
+                            DriveStraightDistance(-6000, -0.8);
+                        }
+                        else{
+                            DriveStraightDistance(-3000, -0.8);
+                        }
+                        Turn(1500, 0.8);
+                        runUsingEncoder();
+                        DriveStraight(-0.8);
+                        sleep(1500);
+                        StopDriving();
+                        runToPosition();
+                        DriveStraightDistance(3000, 0.5);
+                        runUsingEncoder();
+                        if(strafeCount >= 4 && strafeCount <= 6){
+                            while (!robot.touchSensor.isPressed()) {
+                                robot.FrontRight.setPower(-0.5);
+                                robot.RearRight.setPower(-0.5);
+                                robot.SpinRight.setPower(1.0);
+                                robot.SpinLeft.setPower(-1.0);
+                            }
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
+                            robot.SpinRight.setPower(0);
+                            robot.SpinLeft.setPower(0);
+                        }
+                        else {
+                            while (!robot.touchSensor.isPressed()) {
+                                robot.FrontLeft.setPower(0.5);
+                                robot.RearLeft.setPower(0.5);
+                                robot.SpinRight.setPower(1.0);
+                                robot.SpinLeft.setPower(-1.0);
+                            }
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
+                            robot.SpinRight.setPower(0);
+                            robot.SpinLeft.setPower(0);
+                        }
+                        runToPosition();
+                        if(strafeCount >= 4 && strafeCount <= 6){
+                            Turn(-200, -0.8);
+                            Strafe(4000, 0.5);
+                            DriveStraightDistance(5000, 0.8);
+                        }
+                        else {
+                            Turn(200, 0.8);
+                            Strafe(-4000, -0.5);
+                            DriveStraightDistance(-8000, -0.8);
+                            Turn(3000, 0.8);
+                        }
+                        robot.SpinRight.setPower(-1.0);
+                        robot.SpinLeft.setPower(1.0);
+                        DriveStraightDistance(-2000, -0.8);
+                        if(!robot.touchSensor.isPressed()){
+                            robot.RaveShadowLegends.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        }
+                        robot.SpinRight.setPower(0);
+                        robot.SpinLeft.setPower(0);
+                        break;
+                    }
+                }
+            } else {
+                telemetry.addData("Visible Target", "none");
+                if (!init) {
+                    while(!targetVisible){
+                        SpecialStrafe(-700, -0.6);
+                        SpecialTurn(-100, -0.8);
+                        strafeCount++;
+                    }
+                    scanned = true;
+                    StopDriving();
+                }
+                if (!yea) {
+                    StopDriving();
                 }
             }
             if (init == true) {
@@ -436,90 +540,38 @@ public class SkystoneBlue extends LinearOpMode {
                 robot.RearLeft.setPower(0);
                 robot.SpinRight.setPower(0);
                 robot.SpinLeft.setPower(0);
+                runToPosition();
                 init = false;
                 waitForStart();
                 DriveStraightDistance(1200, 0.8);
-            }
-            if (robot.touchSensor.isPressed()) {
-                robot.GrabRight.setPosition(-0.1);
-                robot.GrabLeft.setPosition(-0.1);
-                Strafe(-2500, -0.5);
-                Turn(400, 0.8);
-                if(strafeCount == 1){
-                    DriveStraightDistance(-5000, -0.8);
-                }
-                else if (strafeCount >= 2 && strafeCount <= 5){
-                    DriveStraightDistance(-6000, -0.8);
-                }
-                else if (strafeCount == 0){
-                    DriveStraightDistance(-5000, -0.8);
-                }
-                else{
-                    DriveStraightDistance(-7000, -0.8);
-                }
-                Turn(3000, 0.8);
-                robot.GrabRight.setPosition(0.1);
-                robot.GrabLeft.setPosition(0.2);
-                robot.SpinRight.setPower(-1.0);
-                robot.SpinLeft.setPower(1.0);
-                sleep(500);
-                robot.SpinRight.setPower(0);
-                robot.SpinLeft.setPower(0);
-                DriveStraightDistance(-1750, -0.8);
-                /*if(strafeCount == 2 || strafeCount == 1){
-                    DriveStraightDistance(-5000, -0.8);
-                }
-                else if (strafeCount >= 3 && strafeCount <= 4){
-                    DriveStraightDistance(-5000, -0.8);
-                }
-                else if (strafeCount == 0){
-                    DriveStraightDistance(-4000, -0.8);
-                }
-                else{
-                    DriveStraightDistance(-1000, -0.8);
-                }
-                Turn(-1500, -0.8);
-                DriveStraightDistance(2000, 0.5);
-                if(strafeCount >= 1 && strafeCount <= 4){
-                    while (robot.touchSensor.isPressed() == false) {
-                        robot.FrontRight.setPower(-0.5);
-                        robot.RearRight.setPower(-0.5);
-                        robot.SpinRight.setPower(1.0);
-                        robot.SpinLeft.setPower(-1.0);
-                    }
-                }
-                else {
-                    while (robot.touchSensor.isPressed() == false) {
-                        robot.FrontLeft.setPower(0.5);
-                        robot.RearLeft.setPower(0.5);
-                        robot.SpinRight.setPower(1.0);
-                        robot.SpinLeft.setPower(-1.0);
-                    }
-                    robot.SpinRight.setPower(0);
-                    robot.SpinLeft.setPower(0);
-                }
-                if(strafeCount >= 1 && strafeCount <= 4){
-                    Strafe(2500, 0.5);
-                    DriveStraightDistance(-5000, -0.8);
-                    Turn(1500, 0.8);
-                }
-                else {
-                    DriveStraightDistance(6000, 0.8);
-                    Strafe(-2500, -0.5);
-                }
-                robot.SpinRight.setPower(-1.0);
-                robot.SpinLeft.setPower(1.0);
-                sleep(500);
-                robot.SpinRight.setPower(0);
-                robot.SpinLeft.setPower(0);
-                */
-                break;
             }
             telemetry.update();
         }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
+    }
+
+    private void runToPosition(){
+        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FrontRight.setTargetPosition(0);
+        robot.FrontLeft.setTargetPosition(0);
+        robot.RearRight.setTargetPosition(0);
+        robot.RearLeft.setTargetPosition(0);
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void runUsingEncoder(){
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void DriveStraight(double power) {
@@ -537,26 +589,10 @@ public class SkystoneBlue extends LinearOpMode {
         //}
     }
 
-    private void StopDriving() {
-        DriveStraight(0);
-    }
+    private void StopDriving() {DriveStraight(0);}
 
     private void DriveStraightDistance(int distance, double power) {
         telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.FrontRight.setTargetPosition(-distance);
-        robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(-distance);
-        robot.RearLeft.setTargetPosition(distance);
-
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         DriveStraight(power);
         while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()) {
@@ -564,58 +600,57 @@ public class SkystoneBlue extends LinearOpMode {
         }
 
         StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void Turn(int distance, double power) {
         telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         robot.FrontRight.setTargetPosition(distance);
         robot.FrontLeft.setTargetPosition(distance);
         robot.RearRight.setTargetPosition(distance);
         robot.RearLeft.setTargetPosition(distance);
 
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         DriveStraight(power);
         while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()) {
             idle();
         }
 
         StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void SpecialTurn(int distance, double power) {
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setTargetPosition(robot.FrontRight.getCurrentPosition() + distance);
+        robot.FrontLeft.setTargetPosition(robot.FrontLeft.getCurrentPosition() + distance);
+        robot.RearRight.setTargetPosition(robot.RearRight.getCurrentPosition() + distance);
+        robot.RearLeft.setTargetPosition(robot.RearLeft.getCurrentPosition() + distance);
+
+        DriveStraight(power);
+        while ((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive() && !targetVisible) {
+            targetVisible = false;
+            for (VuforiaTrackable trackable : allTrackables) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    telemetry.addData("Visible Target", trackable.getName());
+                    targetVisible = true;
+                    robot.FrontRight.setPower(0);
+                    robot.FrontLeft.setPower(0);
+                    robot.RearRight.setPower(0);
+                    robot.RearLeft.setPower(0);
+
+                    // getUpdatedRobotLocation() will return null if no new information is available since
+                    // the last time that call was made, or if the trackable is not currently visible.
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    break;
+                }
+            }
+        }
+        StopDriving();
     }
 
     private void Strafe (int distance, double power){
         telemetry.addData("Driving", "Yes");
-        robot.FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.FrontRight.setTargetPosition(distance);
-        robot.FrontLeft.setTargetPosition(distance);
-        robot.RearRight.setTargetPosition(-distance);
-        robot.RearLeft.setTargetPosition(-distance);
-
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         robot.FrontRight.setPower(power);
         robot.FrontLeft.setPower(power);
         robot.RearRight.setPower(-power);
@@ -626,9 +661,22 @@ public class SkystoneBlue extends LinearOpMode {
         }
 
         StopDriving();
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void SpecialStrafe (int distance, double power){
+        telemetry.addData("Driving", "Yes");
+        robot.FrontRight.setTargetPosition(robot.FrontRight.getCurrentPosition() + distance);
+        robot.FrontLeft.setTargetPosition(robot.FrontLeft.getCurrentPosition() + distance);
+        robot.RearRight.setTargetPosition(robot.RearRight.getCurrentPosition() - distance);
+        robot.RearLeft.setTargetPosition(robot.RearLeft.getCurrentPosition() - distance);
+
+        robot.FrontRight.setPower(power);
+        robot.FrontLeft.setPower(power);
+        robot.RearRight.setPower(-power);
+        robot.RearLeft.setPower(-power);
+
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
+            idle();
+        }
     }
 }
