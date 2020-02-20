@@ -63,6 +63,15 @@ public class TouchdownJesusV2 extends OpMode {
             rightx1 = -gamepad1.right_stick_x-0.1;
         }
 
+        if(gamepad2.dpad_right){
+            robot.Arm1.setPosition(1);
+            robot.Arm2.setPosition(1);
+        }
+        else if(gamepad2.dpad_left){
+            robot.Arm1.setPosition(0);
+            robot.Arm2.setPosition(0);
+        }
+
         if(gamepad2.start || gamepad1.start){
             robot.FoundationServoLeft.setPosition(0.5);
             robot.FoundationServoRight.setPosition(-0.5);
@@ -194,10 +203,7 @@ public class TouchdownJesusV2 extends OpMode {
         robot.RearLeft.setPower(power);
         //}
     }
-
-    private void StopDriving (){
-        DriveStraight(0);
-    }
+    private void StopDriving (){DriveStraight(0);}
 
     private void DriveStraightDistance(int distance, double power){
         telemetry.addData("Driving", "Yes");
@@ -303,7 +309,6 @@ public class TouchdownJesusV2 extends OpMode {
         robot.ArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
     private void RevFlip() {
         robot.ArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.ArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

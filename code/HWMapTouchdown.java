@@ -27,6 +27,8 @@ public class HWMapTouchdown {
     public Servo GrabRight = null;
     public Servo FoundationServoLeft = null;
     public Servo FoundationServoRight = null;
+    public Servo Arm1 = null;
+    public Servo Arm2 = null;
 
     public WebcamName Webcam1 = null;
 
@@ -62,6 +64,8 @@ public class HWMapTouchdown {
         GrabRight = hwMap.get(Servo.class, "GrabRight");
         FoundationServoLeft = hwMap.get(Servo.class, "FoundationServoLeft");
         FoundationServoRight = hwMap.get(Servo.class, "FoundationServoRight");
+        Arm1 = hwMap.get(Servo.class, "Arm1");
+        Arm2 = hwMap.get(Servo.class, "Arm2");
 
         Webcam1 = hwMap.get(WebcamName.class, "Webcam 1");
 

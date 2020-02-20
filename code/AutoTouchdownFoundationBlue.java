@@ -24,9 +24,6 @@ public class AutoTouchdownFoundationBlue extends LinearOpMode {
         robot.FoundationServoLeft.setPosition(0.5);
         robot.FoundationServoRight.setPosition(-0.5);
         Strafe(1600, 0.5);
-        DriveStraight(-0.5);
-        sleep(500);
-        DriveStraight(0);
         DriveStraightDistance(2800, 0.7);
         robot.FoundationServoLeft.setPosition(0.1);
         robot.FoundationServoRight.setPosition(0.5);

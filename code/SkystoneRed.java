@@ -533,7 +533,6 @@ public class SkystoneRed extends LinearOpMode {
                     robot.RearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     while(!targetVisible){
                         SpecialStrafe(700, 0.6);
-                        SpecialTurn(160, 0.8);
                         strafeCount++;
                     }
                     scanned = true;
@@ -562,8 +561,6 @@ public class SkystoneRed extends LinearOpMode {
             }
             telemetry.update();
         }
-
-        // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
     }
 
@@ -721,8 +718,24 @@ public class SkystoneRed extends LinearOpMode {
         robot.RearRight.setPower(-power);
         robot.RearLeft.setPower(-power);
 
-        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive()){
-            idle();
+        while((robot.FrontRight.isBusy() && robot.RearLeft.isBusy() && robot.RearRight.isBusy() && robot.FrontLeft.isBusy()) && opModeIsActive() && !targetVisible){
+            targetVisible = false;
+            for (VuforiaTrackable trackable : allTrackables) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    telemetry.addData("Visible Target", trackable.getName());
+                    targetVisible = true;
+                    robot.FrontRight.setPower(0);
+                    robot.FrontLeft.setPower(0);
+                    robot.RearRight.setPower(0);
+                    robot.RearLeft.setPower(0);
+
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    break;
+                }
+            }
         }
     }
 }
